@@ -1,0 +1,9 @@
+file 'C:/Users/anani/Videos/chaos-brief-slides/01.png'
+duration 13
+file 'C:/Users/anani/Videos/chaos-brief-slides/02.png'
+duration 13
+file 'C:/Users/anani/Videos/chaos-brief-slides/03.png'
+duration 14
+file 'C:/Users/anani/Videos/chaos-brief-slides/04.png'
+duration 14
+file 'C:/Users/anani/Videos/chaos-brief-slides/04.png'

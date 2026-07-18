@@ -24,8 +24,8 @@ Click **Copy as Markdown**.
 
 > The result is a portable brief: it can be copied into a task, shared with a client, or used as the agreement for the next review.
 
-## 52–60s — Codex disclosure
+## 52–60s — Codex and GPT-5.6 disclosure
 
-> I used Codex to design and implement the interactive prototype, validate the JavaScript, and test the live user flow in a browser. The project is open source and publicly deployable.
+> I developed this project in Codex with GPT-5.6. Together they helped turn the idea into the scenario-first workflow, implement and validate the JavaScript, and test the live user flow in a browser. The public app itself uses a transparent deterministic engine rather than an OpenAI API call.
 
 Do not state that the in-browser scenario engine calls an OpenAI model: this prototype deliberately uses a transparent, deterministic engine.

@@ -20,3 +20,14 @@ npx serve .
 ## Built with
 
 HTML, CSS and JavaScript. Designed and implemented with Codex as part of OpenAI Build Week.
+
+## How Codex and GPT-5.6 were used
+
+This project was developed in Codex using the `gpt-5.6-terra` model. Codex and GPT-5.6 were used to:
+
+- turn the initial idea into a scenario-first decision-brief workflow;
+- implement and refine the HTML, CSS and JavaScript prototype;
+- review the deterministic scenario logic and its Markdown export;
+- test the live user flow in a browser and prepare the public demo materials.
+
+The deployed browser application does not make an OpenAI API call. Its scenario engine is intentionally transparent and deterministic, so it does not present generated assumptions as facts.
