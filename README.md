@@ -21,15 +21,19 @@ The draft stays in the browser on that device. No account, server, analytics, or
 
 ## What is implemented
 
-- Topic-aware deterministic rules for payments, orders/bookings, fulfilment, volatile information, and primary user flows.
+- Topic-aware deterministic rules for payments, orders/bookings, fulfilment, volatile information, and primary user flows, including common English, Ukrainian, and Russian terms.
 - Explicit assumptions instead of invented facts.
 - Six scenario paths: ordinary, competent-user, bad-data, changing conditions, workaround, and mature-alternative check.
 - Scope-staging when a request combines three or more operational concerns, with a choice of which flow to validate first.
 - Acceptance criteria, evidence requests, change triggers, and a concrete three-step first-release plan.
 - Evidence ownership: assign a role, due date, and verified state to each unanswered question; assignments remain local to the browser and are included in the Markdown export.
-- Local draft restoration, keyboard-first analysis, and portable Markdown export.
+- Safe local draft restoration, keyboard-first analysis, and portable Markdown export with a browser-compatible copy fallback.
 
 Use the built-in **Bakery launch**, **Support handoff**, and **Product release** examples to see the method applied to different requests.
+
+### Privacy note
+
+Chaos Brief sends no request data to a server. Drafts and evidence assignments are stored only in the current browser when storage is available. Do not enter passwords, payment details, or other secrets; use **Clear saved draft** after a sensitive session on a shared device.
 
 ## Why deterministic rules?
 

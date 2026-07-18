@@ -2,6 +2,11 @@ const $ = (s) => document.querySelector(s);
 const input = $('#brief');
 const draftKey = 'chaos-brief-draft';
 const evidenceKey = 'chaos-brief-evidence-owners';
+const safeStorage = {
+  get(key){ try { return localStorage.getItem(key); } catch { return null; } },
+  set(key, value){ try { localStorage.setItem(key, value); return true; } catch { return false; } },
+  remove(key){ try { localStorage.removeItem(key); return true; } catch { return false; } }
+};
 const sample = `Launch a booking page for a small bakery next week. It must accept pre-orders, show availability, and be simple for the owner to update from a phone.`;
 const examples = {
   bakery: sample,
@@ -19,17 +24,17 @@ const branchData = [
 function count(){ $('#counter').textContent = `${input.value.length} / 800`; }
 function saveDraft(){
   const value = input.value.trim();
-  if(value){ localStorage.setItem(draftKey, input.value); $('#draft-status').textContent='Saved locally'; $('#clear-draft').hidden=false; }
-  else { localStorage.removeItem(draftKey); $('#draft-status').textContent=''; $('#clear-draft').hidden=true; }
+  if(value){ const saved=safeStorage.set(draftKey, input.value); $('#draft-status').textContent=saved ? 'Saved locally' : 'Storage unavailable — this draft stays only on this page'; $('#clear-draft').hidden=false; }
+  else { safeStorage.remove(draftKey); $('#draft-status').textContent=''; $('#clear-draft').hidden=true; }
 }
 function title(text){ const words=text.replace(/[^\w\s-]/g,'').trim().split(/\s+/).slice(0,7); return words.length ? words.map(w=>w[0].toUpperCase()+w.slice(1)).join(' ') : 'Decision brief'; }
 function getNouns(text){ const found=text.toLowerCase().match(/\b(?:booking|orders?|availability|menu|website|page|launch|client|product|payment|delivery|team|app|campaign|service)\b/g) || []; return [...new Set(found)].slice(0,3).join(', ') || 'the requested outcome'; }
 const topicRules = [
-  { match: /\b(?:pay(?:ment|ments)?|checkout|invoice|card|stripe|refund)\b/i, label: 'payment', criterion: 'A customer can complete a payment and receives an unambiguous confirmation.', evidence: 'Which payment method, currency, and refund rule are required for the first release.', trigger: 'The chosen payment provider cannot support the required country, currency, or refund flow.' },
-  { match: /\b(?:order|pre-?order|booking|reservation|appointment)\b/i, label: 'orders or bookings', criterion: 'A customer can place one valid order or booking and the owner can see it immediately.', evidence: 'The exact order or booking rules: cutoff time, confirmation, cancellation, and exceptions.', trigger: 'Order volume or exception handling exceeds the agreed manual workflow.' },
-  { match: /\b(?:deliver|delivery|shipping|pickup|courier)\b/i, label: 'fulfilment', criterion: 'The customer sees a valid fulfilment option before committing.', evidence: 'Delivery area, pickup rules, lead time, and the owner of fulfilment updates.', trigger: 'Delivery coverage, pricing, or lead time changes after the flow is approved.' },
-  { match: /\b(?:menu|price|availability|inventory|stock|catalog)\b/i, label: 'volatile information', criterion: 'The owner can update the volatile information from a phone in under five minutes.', evidence: 'Who owns updates and the source of truth for prices, availability, or stock.', trigger: 'The source of truth becomes unavailable or differs from what the customer sees.' },
-  { match: /\b(?:website|page|landing|app|product|dashboard|form)\b/i, label: 'the user flow', criterion: 'A first-time user can complete the primary flow without help.', evidence: 'The primary user, their first task, and the device they use most often.', trigger: 'User testing shows that the primary flow cannot be completed without guidance.' }
+  { match: /\b(?:pay(?:ment|ments)?|checkout|invoice|card|stripe|refund)\b|оплат\w*|плат[еі]ж\w*/i, label: 'payment', criterion: 'A customer can complete a payment and receives an unambiguous confirmation.', evidence: 'Which payment method, currency, and refund rule are required for the first release.', trigger: 'The chosen payment provider cannot support the required country, currency, or refund flow.' },
+  { match: /\b(?:order|pre-?order|booking|reservation|appointment)\b|заказ\w*|замовлен\w*|запис\w*|броню\w*/i, label: 'orders or bookings', criterion: 'A customer can place one valid order or booking and the owner can see it immediately.', evidence: 'The exact order or booking rules: cutoff time, confirmation, cancellation, and exceptions.', trigger: 'Order volume or exception handling exceeds the agreed manual workflow.' },
+  { match: /\b(?:deliver|delivery|shipping|pickup|courier)\b|достав\w*|самовив\w*|самовывоз\w*/i, label: 'fulfilment', criterion: 'The customer sees a valid fulfilment option before committing.', evidence: 'Delivery area, pickup rules, lead time, and the owner of fulfilment updates.', trigger: 'Delivery coverage, pricing, or lead time changes after the flow is approved.' },
+  { match: /\b(?:menu|price|availability|inventory|stock|catalog)\b|цен\w*|цін\w*|наявност\w*|наявніст\w*|меню/i, label: 'volatile information', criterion: 'The owner can update the volatile information from a phone in under five minutes.', evidence: 'Who owns updates and the source of truth for prices, availability, or stock.', trigger: 'The source of truth becomes unavailable or differs from what the customer sees.' },
+  { match: /\b(?:website|page|landing|app|product|dashboard|form)\b|сайт\w*|стран[иі]ц\w*|сторінк\w*|форм\w*|панел\w*/i, label: 'the user flow', criterion: 'A first-time user can complete the primary flow without help.', evidence: 'The primary user, their first task, and the device they use most often.', trigger: 'User testing shows that the primary flow cannot be completed without guidance.' }
 ];
 function analyzeRequest(raw){
   const matched = topicRules.filter(rule => rule.match.test(raw));
@@ -50,11 +55,12 @@ function analyzeRequest(raw){
   };
 }
 function list(items){ return items.map(x=>`<li>${x}</li>`).join(''); }
-function getEvidenceStore(){ try { return JSON.parse(localStorage.getItem(evidenceKey)) || {}; } catch { return {}; } }
-function setEvidenceStore(store){ localStorage.setItem(evidenceKey, JSON.stringify(store)); }
+function getEvidenceStore(){ try { return JSON.parse(safeStorage.get(evidenceKey)) || {}; } catch { return {}; } }
+function setEvidenceStore(store){ safeStorage.set(evidenceKey, JSON.stringify(store)); }
+function briefId(brief){ let hash=2166136261; for(let i=0;i<brief.length;i++){ hash^=brief.charCodeAt(i); hash=Math.imul(hash,16777619); } return (hash>>>0).toString(36); }
 function renderEvidence(items, brief){
   const store = getEvidenceStore();
-  const prefix = brief.slice(0, 120);
+  const prefix = briefId(brief);
   $('#evidence').innerHTML = items.map((text, index) => `<div class="evidence-item" data-evidence-row="${index}"><span class="evidence-text" data-evidence-text>${text}</span><div class="evidence-controls"><input data-evidence-owner placeholder="Owner or role" aria-label="Owner for evidence ${index + 1}"><input data-evidence-due type="date" aria-label="Due date for evidence ${index + 1}"><label><input data-evidence-done type="checkbox"> verified</label></div></div>`).join('');
   [...document.querySelectorAll('[data-evidence-row]')].forEach(row => {
     const id = `${prefix}:${row.dataset.evidenceRow}`;
@@ -98,7 +104,7 @@ function render(){ const raw=input.value.trim(); if(!raw){input.focus();return;}
     `Compare an existing tool against the criteria for ${analysis.focus}; choose it if it meets the need more cheaply.`
   ];
   branchData.forEach((branch,index)=>{branch[2]=scenarioDetails[index];});
-  const holder=$('#branches'); holder.innerHTML=''; branchData.forEach((b,i)=>{const node=$('#branch-template').content.cloneNode(true);const button=node.querySelector('button');button.querySelector('.branch-icon').textContent=b[0];button.querySelector('.branch-name').textContent=b[1];button.querySelector('small').textContent=b[2];button.addEventListener('click',()=>{holder.querySelectorAll('.branch').forEach(x=>x.classList.remove('active'));button.classList.add('active');$('#next-decision').textContent=b[1];$('#decision-detail').textContent=b[2]+' Decide whether this path needs prevention, an explicit assumption, or a cheaper fallback before committing more work.';});if(i===0)button.classList.add('active');holder.append(node);});
+  const holder=$('#branches'); holder.innerHTML=''; branchData.forEach((b,i)=>{const node=$('#branch-template').content.cloneNode(true);const button=node.querySelector('button');button.querySelector('.branch-icon').textContent=b[0];button.querySelector('.branch-name').textContent=b[1];button.querySelector('small').textContent=b[2];button.addEventListener('click',()=>{holder.querySelectorAll('.branch').forEach(x=>x.classList.remove('active'));button.classList.add('active');const decision=$('#next-decision').textContent;$('#decision-detail').textContent=`${b[2]} This is a stress test for the current decision: ${decision} Decide whether this path needs prevention, an explicit assumption, or a cheaper fallback before committing more work.`;});if(i===0)button.classList.add('active');holder.append(node);});
   $('#results').scrollIntoView({behavior:'smooth',block:'start'});
 }
 function renderStagedFlow(analysis, raw, selectedIndex){
@@ -132,13 +138,22 @@ function renderFlowPicker(analysis, raw){
   });
   renderStagedFlow(analysis,raw,0);
 }
+async function copyText(text){
+  try { if(navigator.clipboard?.writeText){ await navigator.clipboard.writeText(text); return true; } } catch {}
+  try {
+    const fallback=document.createElement('textarea');
+    fallback.value=text; fallback.style.position='fixed'; fallback.style.opacity='0';
+    document.body.append(fallback); fallback.select(); const copied=document.execCommand('copy'); fallback.remove();
+    return copied;
+  } catch { return false; }
+}
 $('#sample').addEventListener('click',()=>{input.value=sample;count();input.focus();});
 document.querySelectorAll('[data-example]').forEach(button=>button.addEventListener('click',()=>{input.value=examples[button.dataset.example];count();saveDraft();render();}));
 input.addEventListener('input',()=>{count();saveDraft();});
 input.addEventListener('keydown',(event)=>{if((event.ctrlKey || event.metaKey) && event.key==='Enter'){event.preventDefault();render();}});
 $('#clear-draft').addEventListener('click',()=>{input.value='';saveDraft();count();input.focus();});
 $('#analyze').addEventListener('click',render);
-$('#copy').addEventListener('click',async()=>{const branches=[...document.querySelectorAll('#branches .branch')].map(button=>`- ${button.querySelector('.branch-name').textContent}: ${button.querySelector('small').textContent}`).join('\n');const evidence=[...document.querySelectorAll('[data-evidence-row]')].map(row=>{const text=row.querySelector('[data-evidence-text]').textContent;const owner=row.querySelector('[data-evidence-owner]').value.trim() || 'unassigned';const due=row.querySelector('[data-evidence-due]').value || 'no due date';const status=row.querySelector('[data-evidence-done]').checked ? 'verified' : 'open';return `- [${status}] ${text} — owner: ${owner}; due: ${due}`;}).join('\n');const md=`# ${$('#brief-title').textContent}\n\n## Next decision\n${$('#next-decision').textContent}\n\n${$('#decision-detail').textContent}\n\n## Assumptions to validate\n${[...document.querySelectorAll('#assumptions li')].map(x=>'- '+x.textContent).join('\n')}\n\n## Acceptance criteria\n${[...document.querySelectorAll('#criteria li')].map(x=>'- '+x.textContent).join('\n')}\n\n## Evidence to get first\n${evidence}\n\n## Reopen the plan when\n${[...document.querySelectorAll('#triggers li')].map(x=>'- '+x.textContent).join('\n')}\n\n## First release plan\n${[...document.querySelectorAll('#first-release li')].map(x=>'- '+x.textContent).join('\n')}\n\n## Scenario paths checked\n${branches}`; await navigator.clipboard.writeText(md); $('#copy').textContent='Copied'; setTimeout(()=>$('#copy').textContent='Copy as Markdown',1300);});
+$('#copy').addEventListener('click',async()=>{const branches=[...document.querySelectorAll('#branches .branch')].map(button=>`- ${button.querySelector('.branch-name').textContent}: ${button.querySelector('small').textContent}`).join('\n');const evidence=[...document.querySelectorAll('[data-evidence-row]')].map(row=>{const text=row.querySelector('[data-evidence-text]').textContent;const owner=row.querySelector('[data-evidence-owner]').value.trim() || 'unassigned';const due=row.querySelector('[data-evidence-due]').value || 'no due date';const status=row.querySelector('[data-evidence-done]').checked ? 'verified' : 'open';return `- [${status}] ${text} — owner: ${owner}; due: ${due}`;}).join('\n');const md=`# ${$('#brief-title').textContent}\n\n## Next decision\n${$('#next-decision').textContent}\n\n${$('#decision-detail').textContent}\n\n## Assumptions to validate\n${[...document.querySelectorAll('#assumptions li')].map(x=>'- '+x.textContent).join('\n')}\n\n## Acceptance criteria\n${[...document.querySelectorAll('#criteria li')].map(x=>'- '+x.textContent).join('\n')}\n\n## Evidence to get first\n${evidence}\n\n## Reopen the plan when\n${[...document.querySelectorAll('#triggers li')].map(x=>'- '+x.textContent).join('\n')}\n\n## First release plan\n${[...document.querySelectorAll('#first-release li')].map(x=>'- '+x.textContent).join('\n')}\n\n## Scenario paths checked\n${branches}`; const copied=await copyText(md); $('#copy').textContent=copied ? 'Copied' : 'Copy unavailable'; setTimeout(()=>$('#copy').textContent='Copy as Markdown',1300);});
 count();
-const savedDraft = localStorage.getItem(draftKey);
+const savedDraft = safeStorage.get(draftKey);
 if(savedDraft){ input.value=savedDraft; count(); $('#draft-status').textContent='Saved draft restored'; $('#clear-draft').hidden=false; }
