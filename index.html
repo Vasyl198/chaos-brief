@@ -21,6 +21,14 @@
       .evidence-controls input { min-width:0; border:1px solid #3c466f; background:#11162b; color:#edf0ff; border-radius:6px; padding:7px; font:11px Manrope,sans-serif; }
       .evidence-controls label { color:#9ca5c4; font:11px 'DM Mono',monospace; white-space:nowrap; }
       @media (max-width:700px) { .evidence-controls { grid-template-columns:1fr 1fr; } .evidence-controls label { grid-column:1 / -1; } }
+      .example-row { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 0; }
+      .example-row button { border:1px solid #38436d; background:#151b34; color:#c5cce7; border-radius:999px; padding:7px 10px; font:11px 'DM Mono',monospace; cursor:pointer; }
+      .example-row button:hover, .example-row button:focus-visible { border-color:#c7ff5e; color:#f4f7ff; outline:none; }
+      .flow-picker { margin:0 0 14px; }
+      .flow-picker p { margin:0 0 8px; color:#9ca5c4; font:11px 'DM Mono',monospace; letter-spacing:.04em; text-transform:uppercase; }
+      .flow-options { display:flex; flex-wrap:wrap; gap:8px; }
+      .flow-options button { border:1px solid #38436d; background:#11162b; color:#c5cce7; border-radius:7px; padding:8px 10px; font:12px Manrope,sans-serif; cursor:pointer; }
+      .flow-options button.active { border-color:#c7ff5e; color:#f4f7ff; box-shadow:inset 0 0 0 1px #c7ff5e33; }
     </style>
   </head>
   <body>
@@ -46,6 +54,11 @@
           <div class="draft-meta"><span id="counter">0 / 800</span><span id="draft-status" aria-live="polite"></span><button id="clear-draft" class="text-button" type="button" hidden>Clear saved draft</button></div>
           <button id="analyze" class="primary" type="button"><span>Generate decision brief</span><b>→</b></button>
         </div>
+        <div class="example-row" aria-label="Example requests">
+          <button type="button" data-example="bakery">Bakery launch</button>
+          <button type="button" data-example="support">Support handoff</button>
+          <button type="button" data-example="product">Product release</button>
+        </div>
       </section>
 
       <section id="empty" class="empty-state">
@@ -59,7 +72,7 @@
           <button id="copy" class="secondary" type="button">Copy as Markdown</button>
         </div>
         <div class="signal-row" id="signals"></div>
-        <article class="card release"><p class="card-label">FIRST RELEASE PLAN</p><ol id="first-release"></ol></article>
+        <article class="card release"><p class="card-label">FIRST RELEASE PLAN</p><div id="flow-picker" class="flow-picker" hidden></div><ol id="first-release"></ol></article>
         <div class="grid">
           <article class="card focus"><p class="card-label">THE NEXT DECISION</p><h3 id="next-decision"></h3><p id="decision-detail"></p><div class="assumptions"><p class="card-label">ASSUMPTIONS TO VALIDATE</p><ul id="assumptions"></ul></div></article>
           <article class="card"><p class="card-label">ACCEPTANCE CRITERIA</p><ul id="criteria"></ul></article>

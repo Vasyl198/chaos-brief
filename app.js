@@ -3,6 +3,11 @@ const input = $('#brief');
 const draftKey = 'chaos-brief-draft';
 const evidenceKey = 'chaos-brief-evidence-owners';
 const sample = `Launch a booking page for a small bakery next week. It must accept pre-orders, show availability, and be simple for the owner to update from a phone.`;
+const examples = {
+  bakery: sample,
+  support: 'Launch a support handoff for a small team this week. Customers need a clear contact form, the team needs ownership rules, and urgent issues must be escalated.',
+  product: 'Release a customer dashboard next week with payments, booking, delivery, and a way for the team to update a price from a phone.'
+};
 const branchData = [
   ['◎','Ordinary path','The request is complete and the owner can review a first version quickly.'],
   ['↗','Competent-user path','The owner already has a menu, photos, and clear order rules.'],
@@ -32,6 +37,7 @@ function analyzeRequest(raw){
   const deadline = raw.match(/\b(?:today|tomorrow|this week|next week|\d+\s*(?:day|days|week|weeks))\b/i);
   const needsStaging = matched.length >= 3;
   return {
+    matchedRules: matched,
     focus: matched.map(rule => rule.label).slice(0, 3).join(', ') || getNouns(raw),
     criteria: unique('criterion', 'Success and failure states are visible, named, and testable.'),
     evidence: unique('evidence', needsStaging ? 'Which single end-to-end flow is in the first release, and what is deliberately deferred.' : deadline ? `Whether the stated deadline (${deadline[0]}) allows a review and correction cycle.` : 'The real deadline and when a first version can be reviewed.'),
@@ -82,6 +88,7 @@ function render(){ const raw=input.value.trim(); if(!raw){input.focus();return;}
   $('#triggers').innerHTML=list(analysis.triggers);
   $('#assumptions').innerHTML=list(assumptionsFor(analysis));
   $('#first-release').innerHTML=list(analysis.firstRelease);
+  renderFlowPicker(analysis, raw);
   const scenarioDetails = [
     `A first version for ${analysis.focus} is reviewed against the criteria before it expands.`,
     'The owner already has the required content, rules, and decision authority, so the first review can happen quickly.',
@@ -94,7 +101,39 @@ function render(){ const raw=input.value.trim(); if(!raw){input.focus();return;}
   const holder=$('#branches'); holder.innerHTML=''; branchData.forEach((b,i)=>{const node=$('#branch-template').content.cloneNode(true);const button=node.querySelector('button');button.querySelector('.branch-icon').textContent=b[0];button.querySelector('.branch-name').textContent=b[1];button.querySelector('small').textContent=b[2];button.addEventListener('click',()=>{holder.querySelectorAll('.branch').forEach(x=>x.classList.remove('active'));button.classList.add('active');$('#next-decision').textContent=b[1];$('#decision-detail').textContent=b[2]+' Decide whether this path needs prevention, an explicit assumption, or a cheaper fallback before committing more work.';});if(i===0)button.classList.add('active');holder.append(node);});
   $('#results').scrollIntoView({behavior:'smooth',block:'start'});
 }
+function renderStagedFlow(analysis, raw, selectedIndex){
+  const selected = analysis.matchedRules[selectedIndex];
+  const deferred = analysis.matchedRules.filter((_, index) => index !== selectedIndex).map(rule => rule.label);
+  $('#next-decision').textContent=`Validate one ${selected.label} flow before expanding.`;
+  $('#decision-detail').textContent=`The first release proves ${selected.label}, while ${deferred.join(', ')} remain explicitly manual or deferred. This turns a large request into one testable decision.`;
+  $('#criteria').innerHTML=list([selected.criterion, 'The user can see what remains manual or deferred before committing.', 'One real user completes the selected flow without guidance.']);
+  renderEvidence([selected.evidence, `Who approves the boundary between ${selected.label} and the deferred concerns.`, 'When one real user can review the selected flow.'], `${raw}:${selected.label}`);
+  $('#triggers').innerHTML=list([selected.trigger, `A deferred concern (${deferred.join(', ')}) becomes necessary for the selected flow.`]);
+  $('#assumptions').innerHTML=list([`The facts needed for ${selected.label} are current and available to the owner.`, 'A real user can review the selected flow before the next concern is added.', 'Deferred concerns can safely remain manual during the first review.']);
+  $('#first-release').innerHTML=list([`Build one testable ${selected.label} flow: ${selected.criterion}`, `Keep ${deferred.join(', ')} manual or deferred, and make that boundary visible.`, 'Review the selected flow with one real user before expanding scope.']);
+}
+function renderFlowPicker(analysis, raw){
+  const picker = $('#flow-picker');
+  if(!analysis.needsStaging){ picker.hidden=true; return; }
+  picker.hidden=false;
+  picker.innerHTML='<p>Choose the first flow to validate</p><div class="flow-options"></div>';
+  const options=picker.querySelector('.flow-options');
+  analysis.matchedRules.forEach((rule,index)=>{
+    const button=document.createElement('button');
+    button.type='button';
+    button.textContent=rule.label;
+    button.classList.toggle('active',index===0);
+    button.addEventListener('click',()=>{
+      options.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+      button.classList.add('active');
+      renderStagedFlow(analysis,raw,index);
+    });
+    options.append(button);
+  });
+  renderStagedFlow(analysis,raw,0);
+}
 $('#sample').addEventListener('click',()=>{input.value=sample;count();input.focus();});
+document.querySelectorAll('[data-example]').forEach(button=>button.addEventListener('click',()=>{input.value=examples[button.dataset.example];count();saveDraft();render();}));
 input.addEventListener('input',()=>{count();saveDraft();});
 input.addEventListener('keydown',(event)=>{if((event.ctrlKey || event.metaKey) && event.key==='Enter'){event.preventDefault();render();}});
 $('#clear-draft').addEventListener('click',()=>{input.value='';saveDraft();count();input.focus();});
