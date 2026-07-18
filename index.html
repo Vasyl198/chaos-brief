@@ -14,6 +14,13 @@
       .release li::before { content:counter(release); position:absolute; left:0; top:-2px; width:21px; height:21px; border:1px solid #c7ff5e; border-radius:50%; display:grid; place-items:center; color:#c7ff5e; font:11px 'DM Mono',monospace; }
       @media (max-width:700px) { .release ol { grid-template-columns:1fr; gap:13px; } }
       @media (max-width:420px) { .draft-meta { gap:6px; } }
+      .evidence-item { border-top:1px solid #2b3358; padding:12px 0; }
+      .evidence-item:first-child { border-top:0; padding-top:0; }
+      .evidence-text { display:block; color:#c5cce7; font-size:13px; line-height:1.45; margin-bottom:9px; }
+      .evidence-controls { display:grid; grid-template-columns:1.15fr .85fr auto; gap:7px; align-items:center; }
+      .evidence-controls input { min-width:0; border:1px solid #3c466f; background:#11162b; color:#edf0ff; border-radius:6px; padding:7px; font:11px Manrope,sans-serif; }
+      .evidence-controls label { color:#9ca5c4; font:11px 'DM Mono',monospace; white-space:nowrap; }
+      @media (max-width:700px) { .evidence-controls { grid-template-columns:1fr 1fr; } .evidence-controls label { grid-column:1 / -1; } }
     </style>
   </head>
   <body>
@@ -59,7 +66,7 @@
         </div>
         <section class="branch-section"><div class="section-title"><p class="eyebrow">SIX PATHS TO CHECK</p><span>Click a path to inspect it</span></div><div id="branches" class="branches"></div></section>
         <div class="grid bottom-grid">
-          <article class="card"><p class="card-label">EVIDENCE TO GET FIRST</p><ul id="evidence"></ul></article>
+          <article class="card"><p class="card-label">EVIDENCE TO GET FIRST</p><div id="evidence"></div></article>
           <article class="card risk"><p class="card-label">CHANGE TRIGGERS</p><ul id="triggers"></ul></article>
         </div>
       </section>

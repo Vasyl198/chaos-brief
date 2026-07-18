@@ -26,6 +26,7 @@ The draft stays in the browser on that device. No account, server, analytics, or
 - Six scenario paths: ordinary, competent-user, bad-data, changing conditions, workaround, and mature-alternative check.
 - Scope-staging when a request combines three or more operational concerns.
 - Acceptance criteria, evidence requests, change triggers, and a concrete three-step first-release plan.
+- Evidence ownership: assign a role, due date, and verified state to each unanswered question; assignments remain local to the browser and are included in the Markdown export.
 - Local draft restoration, keyboard-first analysis, and portable Markdown export.
 
 ## Why deterministic rules?
@@ -49,6 +50,7 @@ Use the sample above and verify that the app shows:
 - three first-release steps;
 - assumptions to validate;
 - scenario text that references the detected request focus.
+- three evidence rows where an owner and a due date can be assigned.
 
 The core script can also be checked with:
 

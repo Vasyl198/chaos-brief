@@ -15,6 +15,7 @@ Chaos Brief is a privacy-first browser tool for the first conversation. Paste a 
 - an explicit next decision;
 - assumptions that must be validated rather than treated as facts;
 - acceptance criteria and evidence gaps;
+- a local evidence board where each unknown receives an owner, due date, and verified state;
 - change triggers that reopen the plan;
 - a three-step first-release plan;
 - six scenario paths: ordinary, competent-user, bad-data, changing conditions, workaround, and mature-alternative check.
@@ -25,7 +26,7 @@ When one request combines payment, booking, delivery, and volatile information, 
 
 The app is a dependency-free HTML, CSS, and JavaScript browser prototype. Its deterministic scenario engine recognizes operational topics such as payments, orders, fulfilment, volatile information, and primary user flows. It maps them to questions, criteria, triggers, and contextual scenario descriptions.
 
-The draft is stored locally in the browser. There is no account, server, analytics, or API call in the deployed application.
+The draft and evidence assignments are stored locally in the browser. There is no account, server, analytics, or API call in the deployed application.
 
 ## How Codex and GPT-5.6 were used
 
@@ -41,7 +42,7 @@ The main product challenge was avoiding a polished-looking list of generic advic
 
 - A working live, no-login browser prototype.
 - Topic-aware scenario analysis instead of one static happy path.
-- Privacy-preserving local draft recovery and portable Markdown output.
+- Privacy-preserving local draft recovery, evidence ownership, and portable Markdown output.
 - A clear, testable path for judges: paste one complex request and inspect the staged-release result.
 
 ## What we learned

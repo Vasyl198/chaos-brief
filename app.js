@@ -1,6 +1,7 @@
 const $ = (s) => document.querySelector(s);
 const input = $('#brief');
 const draftKey = 'chaos-brief-draft';
+const evidenceKey = 'chaos-brief-evidence-owners';
 const sample = `Launch a booking page for a small bakery next week. It must accept pre-orders, show availability, and be simple for the owner to update from a phone.`;
 const branchData = [
   ['◎','Ordinary path','The request is complete and the owner can review a first version quickly.'],
@@ -43,6 +44,29 @@ function analyzeRequest(raw){
   };
 }
 function list(items){ return items.map(x=>`<li>${x}</li>`).join(''); }
+function getEvidenceStore(){ try { return JSON.parse(localStorage.getItem(evidenceKey)) || {}; } catch { return {}; } }
+function setEvidenceStore(store){ localStorage.setItem(evidenceKey, JSON.stringify(store)); }
+function renderEvidence(items, brief){
+  const store = getEvidenceStore();
+  const prefix = brief.slice(0, 120);
+  $('#evidence').innerHTML = items.map((text, index) => `<div class="evidence-item" data-evidence-row="${index}"><span class="evidence-text" data-evidence-text>${text}</span><div class="evidence-controls"><input data-evidence-owner placeholder="Owner or role" aria-label="Owner for evidence ${index + 1}"><input data-evidence-due type="date" aria-label="Due date for evidence ${index + 1}"><label><input data-evidence-done type="checkbox"> verified</label></div></div>`).join('');
+  [...document.querySelectorAll('[data-evidence-row]')].forEach(row => {
+    const id = `${prefix}:${row.dataset.evidenceRow}`;
+    const saved = store[id] || {};
+    const owner = row.querySelector('[data-evidence-owner]');
+    const due = row.querySelector('[data-evidence-due]');
+    const done = row.querySelector('[data-evidence-done]');
+    owner.value = saved.owner || ''; due.value = saved.due || ''; done.checked = Boolean(saved.done);
+    const save = () => { store[id] = { owner: owner.value.trim(), due: due.value, done: done.checked }; setEvidenceStore(store); updateEvidenceProgress(); };
+    owner.addEventListener('input', save); due.addEventListener('change', save); done.addEventListener('change', save);
+  });
+  updateEvidenceProgress();
+}
+function updateEvidenceProgress(){
+  const rows = [...document.querySelectorAll('[data-evidence-row]')];
+  const ready = rows.filter(row => row.querySelector('[data-evidence-owner]').value.trim() && row.querySelector('[data-evidence-due]').value).length;
+  const signal = $('#ownership-signal'); if(signal) signal.innerHTML = `Evidence owned: <b>${ready}/${rows.length}</b>`;
+}
 function assumptionsFor(analysis){
   const knownFocus = analysis.focus === 'the requested outcome' ? 'the requested outcome' : analysis.focus;
   return [
@@ -52,9 +76,9 @@ function assumptionsFor(analysis){
   ];
 }
 function render(){ const raw=input.value.trim(); if(!raw){input.focus();return;} const analysis=analyzeRequest(raw); $('#empty').hidden=true; $('#results').hidden=false; $('#brief-title').textContent=title(raw); $('#next-decision').textContent=analysis.needsStaging ? 'Choose one end-to-end flow for the first release.' : 'Confirm the smallest outcome that must be true next.'; $('#decision-detail').textContent=analysis.needsStaging ? `This request combines ${analysis.focus}. Treating all of it as one release creates an untestable scope: select one flow, name what is deferred, then validate it before adding the next concern.` : `Before selecting a solution, agree what “working” means for ${analysis.focus}: who uses it, what they can complete, and what proof counts.`;
-  $('#signals').innerHTML=[`Scope: <b>${analysis.needsStaging ? 'staged release needed' : 'unconfirmed'}</b>`,`Evidence gaps: <b>${analysis.gaps}</b>`,'Branches: <b>6 checked</b>','Plan state: <b>draft</b>'].map(x=>`<span class="signal">${x}</span>`).join('');
+  $('#signals').innerHTML=[`Scope: <b>${analysis.needsStaging ? 'staged release needed' : 'unconfirmed'}</b>`,`Evidence gaps: <b>${analysis.gaps}</b>`,'Branches: <b>6 checked</b>','Plan state: <b>draft</b>','<span id="ownership-signal"></span>'].map(x=>`<span class="signal">${x}</span>`).join('');
   $('#criteria').innerHTML=list(analysis.criteria);
-  $('#evidence').innerHTML=list(analysis.evidence);
+  renderEvidence(analysis.evidence, raw);
   $('#triggers').innerHTML=list(analysis.triggers);
   $('#assumptions').innerHTML=list(assumptionsFor(analysis));
   $('#first-release').innerHTML=list(analysis.firstRelease);
@@ -75,7 +99,7 @@ input.addEventListener('input',()=>{count();saveDraft();});
 input.addEventListener('keydown',(event)=>{if((event.ctrlKey || event.metaKey) && event.key==='Enter'){event.preventDefault();render();}});
 $('#clear-draft').addEventListener('click',()=>{input.value='';saveDraft();count();input.focus();});
 $('#analyze').addEventListener('click',render);
-$('#copy').addEventListener('click',async()=>{const branches=[...document.querySelectorAll('#branches .branch')].map(button=>`- ${button.querySelector('.branch-name').textContent}: ${button.querySelector('small').textContent}`).join('\n');const md=`# ${$('#brief-title').textContent}\n\n## Next decision\n${$('#next-decision').textContent}\n\n${$('#decision-detail').textContent}\n\n## Assumptions to validate\n${[...document.querySelectorAll('#assumptions li')].map(x=>'- '+x.textContent).join('\n')}\n\n## Acceptance criteria\n${[...document.querySelectorAll('#criteria li')].map(x=>'- '+x.textContent).join('\n')}\n\n## Evidence to get first\n${[...document.querySelectorAll('#evidence li')].map(x=>'- '+x.textContent).join('\n')}\n\n## Reopen the plan when\n${[...document.querySelectorAll('#triggers li')].map(x=>'- '+x.textContent).join('\n')}\n\n## First release plan\n${[...document.querySelectorAll('#first-release li')].map(x=>'- '+x.textContent).join('\n')}\n\n## Scenario paths checked\n${branches}`; await navigator.clipboard.writeText(md); $('#copy').textContent='Copied'; setTimeout(()=>$('#copy').textContent='Copy as Markdown',1300);});
+$('#copy').addEventListener('click',async()=>{const branches=[...document.querySelectorAll('#branches .branch')].map(button=>`- ${button.querySelector('.branch-name').textContent}: ${button.querySelector('small').textContent}`).join('\n');const evidence=[...document.querySelectorAll('[data-evidence-row]')].map(row=>{const text=row.querySelector('[data-evidence-text]').textContent;const owner=row.querySelector('[data-evidence-owner]').value.trim() || 'unassigned';const due=row.querySelector('[data-evidence-due]').value || 'no due date';const status=row.querySelector('[data-evidence-done]').checked ? 'verified' : 'open';return `- [${status}] ${text} — owner: ${owner}; due: ${due}`;}).join('\n');const md=`# ${$('#brief-title').textContent}\n\n## Next decision\n${$('#next-decision').textContent}\n\n${$('#decision-detail').textContent}\n\n## Assumptions to validate\n${[...document.querySelectorAll('#assumptions li')].map(x=>'- '+x.textContent).join('\n')}\n\n## Acceptance criteria\n${[...document.querySelectorAll('#criteria li')].map(x=>'- '+x.textContent).join('\n')}\n\n## Evidence to get first\n${evidence}\n\n## Reopen the plan when\n${[...document.querySelectorAll('#triggers li')].map(x=>'- '+x.textContent).join('\n')}\n\n## First release plan\n${[...document.querySelectorAll('#first-release li')].map(x=>'- '+x.textContent).join('\n')}\n\n## Scenario paths checked\n${branches}`; await navigator.clipboard.writeText(md); $('#copy').textContent='Copied'; setTimeout(()=>$('#copy').textContent='Copy as Markdown',1300);});
 count();
 const savedDraft = localStorage.getItem(draftKey);
 if(savedDraft){ input.value=savedDraft; count(); $('#draft-status').textContent='Saved draft restored'; $('#clear-draft').hidden=false; }
