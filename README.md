@@ -2,7 +2,15 @@
 
 **Turn a vague work request into a small, testable first release — without pretending missing facts are known.**
 
-[Live demo](https://vasyl198.github.io/chaos-brief/) · [60-second video](https://youtu.be/4N-FvPZu05g) · [Devpost project](https://devpost.com/software/chaos-brief)
+[Live demo](https://vasyl198.github.io/chaos-brief/) · [41-second demo video](https://youtu.be/vnhCTPCMP4E) · [Devpost project](https://devpost.com/software/chaos-brief)
+
+## Judge quick path
+
+1. Watch the [41-second demo](https://youtu.be/vnhCTPCMP4E) for the complete interaction.
+2. Open the [live demo](https://vasyl198.github.io/chaos-brief/), choose **Product release**, and generate the brief.
+3. Select **fulfilment**, then open **Changing conditions** to see how the same request changes the first decision, evidence needed, acceptance criteria, and triggers to reopen the plan.
+
+The result is deliberately inspectable: it never turns missing facts into confident claims, and it keeps the selected first-release boundary visible.
 
 ## The problem
 
