@@ -6,6 +6,15 @@
     <meta name="theme-color" content="#101426" />
     <title>Chaos Brief — decision-ready work briefs</title>
     <link rel="stylesheet" href="style.css" />
+    <style>
+      .draft-meta { display:flex; align-items:center; gap:10px; min-height:18px; }
+      .release { margin-bottom:16px; background:linear-gradient(90deg,#1b2340,#151a30c9); }
+      .release ol { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin:0; padding:0; list-style:none; counter-reset:release; }
+      .release li { counter-increment:release; color:#c5cce7; font-size:13px; line-height:1.45; padding-left:31px; position:relative; }
+      .release li::before { content:counter(release); position:absolute; left:0; top:-2px; width:21px; height:21px; border:1px solid #c7ff5e; border-radius:50%; display:grid; place-items:center; color:#c7ff5e; font:11px 'DM Mono',monospace; }
+      @media (max-width:700px) { .release ol { grid-template-columns:1fr; gap:13px; } }
+      @media (max-width:420px) { .draft-meta { gap:6px; } }
+    </style>
   </head>
   <body>
     <main class="shell">
@@ -27,7 +36,7 @@
         </div>
         <textarea id="brief" maxlength="800" placeholder="Example: Launch a booking page for a small bakery next week. It must accept orders, show availability, and be easy for the owner to update."></textarea>
         <div class="composer-bottom">
-          <span id="counter">0 / 800</span>
+          <div class="draft-meta"><span id="counter">0 / 800</span><span id="draft-status" aria-live="polite"></span><button id="clear-draft" class="text-button" type="button" hidden>Clear saved draft</button></div>
           <button id="analyze" class="primary" type="button"><span>Generate decision brief</span><b>→</b></button>
         </div>
       </section>
@@ -43,8 +52,9 @@
           <button id="copy" class="secondary" type="button">Copy as Markdown</button>
         </div>
         <div class="signal-row" id="signals"></div>
+        <article class="card release"><p class="card-label">FIRST RELEASE PLAN</p><ol id="first-release"></ol></article>
         <div class="grid">
-          <article class="card focus"><p class="card-label">THE NEXT DECISION</p><h3 id="next-decision"></h3><p id="decision-detail"></p></article>
+          <article class="card focus"><p class="card-label">THE NEXT DECISION</p><h3 id="next-decision"></h3><p id="decision-detail"></p><div class="assumptions"><p class="card-label">ASSUMPTIONS TO VALIDATE</p><ul id="assumptions"></ul></div></article>
           <article class="card"><p class="card-label">ACCEPTANCE CRITERIA</p><ul id="criteria"></ul></article>
         </div>
         <section class="branch-section"><div class="section-title"><p class="eyebrow">SIX PATHS TO CHECK</p><span>Click a path to inspect it</span></div><div id="branches" class="branches"></div></section>
