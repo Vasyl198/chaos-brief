@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#101426" />
+    <title>Chaos Brief — decision-ready work briefs</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header>
+        <a class="brand" href="#top" aria-label="Chaos Brief home"><span class="brand-mark">↯</span> Chaos Brief</a>
+        <div class="status"><i></i> Scenario engine ready</div>
+      </header>
+
+      <section class="hero" id="top">
+        <p class="eyebrow">WORK &amp; PRODUCTIVITY</p>
+        <h1>Make vague work <em>decision-ready.</em></h1>
+        <p class="lede">Chaos Brief exposes the branches a linear plan misses: assumptions, evidence gaps, failure paths, acceptance criteria, and the next decision to make.</p>
+      </section>
+
+      <section class="composer" aria-label="Brief composer">
+        <div class="composer-top">
+          <label for="brief">What needs to happen?</label>
+          <button id="sample" class="text-button" type="button">Use a realistic example</button>
+        </div>
+        <textarea id="brief" maxlength="800" placeholder="Example: Launch a booking page for a small bakery next week. It must accept orders, show availability, and be easy for the owner to update."></textarea>
+        <div class="composer-bottom">
+          <span id="counter">0 / 800</span>
+          <button id="analyze" class="primary" type="button"><span>Generate decision brief</span><b>→</b></button>
+        </div>
+      </section>
+
+      <section id="empty" class="empty-state">
+        <div class="orbit">✦</div>
+        <div><strong>Start with a messy request.</strong><p>The output stays deliberately concrete: no invented facts, only visible assumptions and choices.</p></div>
+      </section>
+
+      <section id="results" hidden aria-live="polite">
+        <div class="result-heading">
+          <div><p class="eyebrow">DECISION BRIEF</p><h2 id="brief-title">Untitled brief</h2></div>
+          <button id="copy" class="secondary" type="button">Copy as Markdown</button>
+        </div>
+        <div class="signal-row" id="signals"></div>
+        <div class="grid">
+          <article class="card focus"><p class="card-label">THE NEXT DECISION</p><h3 id="next-decision"></h3><p id="decision-detail"></p></article>
+          <article class="card"><p class="card-label">ACCEPTANCE CRITERIA</p><ul id="criteria"></ul></article>
+        </div>
+        <section class="branch-section"><div class="section-title"><p class="eyebrow">SIX PATHS TO CHECK</p><span>Click a path to inspect it</span></div><div id="branches" class="branches"></div></section>
+        <div class="grid bottom-grid">
+          <article class="card"><p class="card-label">EVIDENCE TO GET FIRST</p><ul id="evidence"></ul></article>
+          <article class="card risk"><p class="card-label">CHANGE TRIGGERS</p><ul id="triggers"></ul></article>
+        </div>
+      </section>
+
+      <footer>Built as a working prototype for OpenAI Build Week · The scenario structure is designed to keep plans honest under changing conditions.</footer>
+    </main>
+    <template id="branch-template"><button class="branch" type="button"><span class="branch-icon"></span><span class="branch-name"></span><span class="branch-arrow">↗</span><small></small></button></template>
+    <script src="app.js"></script>
+  </body>
+</html>
