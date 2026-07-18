@@ -2,7 +2,7 @@
 
 **Turn a vague work request into a small, testable first release — without pretending missing facts are known.**
 
-[Live demo](https://vasyl198.github.io/chaos-brief/) · [60-second video](https://youtu.be/vngFjG85JC8) · [Devpost project](https://devpost.com/software/chaos-brief)
+[Live demo](https://vasyl198.github.io/chaos-brief/) · [60-second video](https://youtu.be/4N-FvPZu05g) · [Devpost project](https://devpost.com/software/chaos-brief)
 
 ## The problem
 

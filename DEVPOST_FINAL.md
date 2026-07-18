@@ -56,5 +56,5 @@ Add editable evidence ownership, reusable team templates, and optional integrati
 ## Links
 
 - Live demo: https://vasyl198.github.io/chaos-brief/
-- Demo video: https://youtu.be/vngFjG85JC8
+- Demo video: https://youtu.be/4N-FvPZu05g
 - Source: https://github.com/Vasyl198/chaos-brief
