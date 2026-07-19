@@ -104,6 +104,14 @@ function saveTestEntry(){
   resetTestForm();
   renderTestLog();
 }
+async function copyTestLog(){
+  const entries = getTestLog();
+  const status = $('#test-status');
+  if(!entries.length){ status.textContent='Log one observed test first'; return; }
+  const lines = entries.map((entry,index) => `${index + 1}. ${entry.result}\n   Task: ${entry.task}\n   Friction: ${entry.friction || 'None recorded'}\n   Brief: ${entry.brief}`).join('\n\n');
+  const copied = await copyText(`# Chaos Brief real-world test log\n\n${lines}`);
+  status.textContent = copied ? 'Test log copied' : 'Copy unavailable';
+}
 function briefId(brief){ let hash=2166136261; for(let i=0;i<brief.length;i++){ hash^=brief.charCodeAt(i); hash=Math.imul(hash,16777619); } return (hash>>>0).toString(36); }
 function renderEvidence(items, brief){
   const store = getEvidenceStore();
@@ -206,5 +214,6 @@ $('#copy').addEventListener('click',async()=>{const branches=[...document.queryS
 count();
 $('#ledger-save').addEventListener('click', saveLedgerEntry);
 $('#test-save').addEventListener('click', saveTestEntry);
+$('#test-copy').addEventListener('click', copyTestLog);
 const savedDraft = safeStorage.get(draftKey);
 if(savedDraft){ input.value=savedDraft; count(); $('#draft-status').textContent='Saved draft restored'; $('#clear-draft').hidden=false; }
