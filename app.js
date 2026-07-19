@@ -112,6 +112,11 @@ async function copyTestLog(){
   const copied = await copyText(`# Chaos Brief real-world test log\n\n${lines}`);
   status.textContent = copied ? 'Test log copied' : 'Copy unavailable';
 }
+async function copyTestInvite(){
+  const invite = `Could you spend 5 minutes trying a small decision tool?\n\nOpen https://vasyl198.github.io/chaos-brief/\n1. Paste a real, vague work request.\n2. Generate the decision brief.\n3. Tell me: was the next decision clear, what felt confusing, and could you use it again?\n\nThe tool keeps the notes in your browser; please send feedback directly to me.`;
+  const copied = await copyText(invite);
+  $('#test-status').textContent = copied ? 'Tester invitation copied' : 'Copy unavailable';
+}
 function clearLocalLogs(){
   if(!window.confirm('Clear saved decisions, test logs, and evidence ownership from this browser?')) return;
   safeStorage.remove(ledgerKey);
@@ -227,6 +232,7 @@ count();
 $('#ledger-save').addEventListener('click', saveLedgerEntry);
 $('#test-save').addEventListener('click', saveTestEntry);
 $('#test-copy').addEventListener('click', copyTestLog);
+$('#copy-test-invite').addEventListener('click', copyTestInvite);
 $('#clear-local-logs').addEventListener('click', clearLocalLogs);
 const savedDraft = safeStorage.get(draftKey);
 if(savedDraft){ input.value=savedDraft; count(); $('#draft-status').textContent='Saved draft restored'; $('#clear-draft').hidden=false; }

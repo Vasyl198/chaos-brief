@@ -106,6 +106,7 @@
         <article class="card test-log" aria-labelledby="test-log-title">
           <div class="ledger-heading"><div><p class="card-label">REAL-WORLD TEST LOG</p><h3 id="test-log-title">Record what happened when someone tried the flow.</h3></div><span id="test-status" aria-live="polite"></span></div>
           <p>This is deliberately not an analytics counter. Log one observed attempt: the task, result, and the point where it became unclear.</p>
+          <button id="copy-test-invite" class="secondary" type="button">Copy tester invitation</button>
           <div class="test-controls">
             <label>Task attempted<input id="test-task" maxlength="140" placeholder="Example: complete payment on a phone"></label>
             <label>Observed result<select id="test-result"><option value="">Choose result</option><option>Completed without help</option><option>Completed with help</option><option>Could not complete</option></select></label>
@@ -130,6 +131,6 @@
       <footer>Built as a working prototype for OpenAI Build Week · The scenario structure is designed to keep plans honest under changing conditions.</footer>
     </main>
     <template id="branch-template"><button class="branch" type="button"><span class="branch-icon"></span><span class="branch-name"></span><span class="branch-arrow">↗</span><small></small></button></template>
-    <script src="app.js?v=6a51693-privacy"></script>
+    <script src="app.js?v=db06aff-invite"></script>
   </body>
 </html>
