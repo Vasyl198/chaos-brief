@@ -46,6 +46,7 @@
       .test-controls label { display:grid; gap:6px; color:#9ca5c4; font:11px 'DM Mono',monospace; }
       .test-controls select,.test-controls input { width:100%; border:1px solid #3c466f; background:#11162b; color:#edf0ff; border-radius:7px; padding:9px; font:12px Manrope,sans-serif; }
       .test-controls .secondary { height:36px; white-space:nowrap; }
+      .privacy-controls { display:flex; justify-content:space-between; gap:12px; align-items:center; margin-top:14px; color:#9ca5c4; font:11px 'DM Mono',monospace; }
       @media (max-width:700px) { .ledger-controls { grid-template-columns:1fr 1fr; } .ledger-controls .secondary { grid-column:1/-1; } .ledger-heading { flex-direction:column; gap:3px; } }
       @media (max-width:420px) { .ledger-controls { grid-template-columns:1fr; } }
     </style>
@@ -112,6 +113,7 @@
             <button id="test-save" class="secondary" type="button">Log test</button><button id="test-copy" class="secondary" type="button">Copy test log</button>
           </div>
           <ol id="test-list" class="ledger-list" aria-label="Saved real-world tests"></ol>
+          <div class="privacy-controls"><span>Logs stay in this browser until you clear them.</span><button id="clear-local-logs" class="secondary" type="button">Clear local logs</button></div>
         </article>
         <article class="card release"><p class="card-label">FIRST RELEASE PLAN</p><div id="flow-picker" class="flow-picker" hidden></div><ol id="first-release"></ol></article>
         <div class="grid">
@@ -128,6 +130,6 @@
       <footer>Built as a working prototype for OpenAI Build Week · The scenario structure is designed to keep plans honest under changing conditions.</footer>
     </main>
     <template id="branch-template"><button class="branch" type="button"><span class="branch-icon"></span><span class="branch-name"></span><span class="branch-arrow">↗</span><small></small></button></template>
-    <script src="app.js?v=d9f87df-export"></script>
+    <script src="app.js?v=6a51693-privacy"></script>
   </body>
 </html>
