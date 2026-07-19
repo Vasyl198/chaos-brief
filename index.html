@@ -41,6 +41,11 @@
       .ledger-list li { border-top:1px solid #2b3358; padding:10px 0 0; color:#c5cce7; font-size:12px; line-height:1.45; }
       .ledger-list li b { color:#c7ff5e; }
       .ledger-list .empty-ledger { color:#9ca5c4; }
+      .test-log { margin:0 0 16px; background:linear-gradient(135deg,#1f2636,#141a28); }
+      .test-controls { display:grid; grid-template-columns:1.25fr 1fr 1.5fr auto; gap:9px; align-items:end; margin-top:16px; }
+      .test-controls label { display:grid; gap:6px; color:#9ca5c4; font:11px 'DM Mono',monospace; }
+      .test-controls select,.test-controls input { width:100%; border:1px solid #3c466f; background:#11162b; color:#edf0ff; border-radius:7px; padding:9px; font:12px Manrope,sans-serif; }
+      .test-controls .secondary { height:36px; white-space:nowrap; }
       @media (max-width:700px) { .ledger-controls { grid-template-columns:1fr 1fr; } .ledger-controls .secondary { grid-column:1/-1; } .ledger-heading { flex-direction:column; gap:3px; } }
       @media (max-width:420px) { .ledger-controls { grid-template-columns:1fr; } }
     </style>
@@ -97,6 +102,17 @@
           </div>
           <ol id="ledger-list" class="ledger-list" aria-label="Saved decisions"></ol>
         </article>
+        <article class="card test-log" aria-labelledby="test-log-title">
+          <div class="ledger-heading"><div><p class="card-label">REAL-WORLD TEST LOG</p><h3 id="test-log-title">Record what happened when someone tried the flow.</h3></div><span id="test-status" aria-live="polite"></span></div>
+          <p>This is deliberately not an analytics counter. Log one observed attempt: the task, result, and the point where it became unclear.</p>
+          <div class="test-controls">
+            <label>Task attempted<input id="test-task" maxlength="140" placeholder="Example: complete payment on a phone"></label>
+            <label>Observed result<select id="test-result"><option value="">Choose result</option><option>Completed without help</option><option>Completed with help</option><option>Could not complete</option></select></label>
+            <label>Friction or surprise<input id="test-friction" maxlength="180" placeholder="What was confusing, slow, or unexpected?"></label>
+            <button id="test-save" class="secondary" type="button">Log test</button>
+          </div>
+          <ol id="test-list" class="ledger-list" aria-label="Saved real-world tests"></ol>
+        </article>
         <article class="card release"><p class="card-label">FIRST RELEASE PLAN</p><div id="flow-picker" class="flow-picker" hidden></div><ol id="first-release"></ol></article>
         <div class="grid">
           <article class="card focus"><p class="card-label">THE NEXT DECISION</p><h3 id="next-decision"></h3><p id="decision-detail"></p><div class="assumptions"><p class="card-label">ASSUMPTIONS TO VALIDATE</p><ul id="assumptions"></ul></div></article>
@@ -112,6 +128,6 @@
       <footer>Built as a working prototype for OpenAI Build Week · The scenario structure is designed to keep plans honest under changing conditions.</footer>
     </main>
     <template id="branch-template"><button class="branch" type="button"><span class="branch-icon"></span><span class="branch-name"></span><span class="branch-arrow">↗</span><small></small></button></template>
-    <script src="app.js?v=d400aac"></script>
+    <script src="app.js?v=7f99f07-tests"></script>
   </body>
 </html>

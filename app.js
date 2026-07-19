@@ -3,6 +3,7 @@ const input = $('#brief');
 const draftKey = 'chaos-brief-draft';
 const evidenceKey = 'chaos-brief-evidence-owners';
 const ledgerKey = 'chaos-brief-decision-ledger';
+const testLogKey = 'chaos-brief-real-world-tests';
 const safeStorage = {
   get(key){ try { return localStorage.getItem(key); } catch { return null; } },
   set(key, value){ try { localStorage.setItem(key, value); return true; } catch { return false; } },
@@ -81,6 +82,28 @@ function saveLedgerEntry(){
   resetLedgerForm();
   renderLedger();
 }
+function getTestLog(){ try { return JSON.parse(safeStorage.get(testLogKey)) || []; } catch { return []; } }
+function setTestLog(entries){ safeStorage.set(testLogKey, JSON.stringify(entries.slice(0, 20))); }
+function renderTestLog(){
+  const entries = getTestLog();
+  const list = $('#test-list');
+  list.innerHTML = entries.length
+    ? entries.map(entry => `<li><b>${escapeHtml(entry.result)}</b> | ${escapeHtml(entry.task)}<br><small>${escapeHtml(entry.friction || 'No friction recorded.')} | ${escapeHtml(entry.brief)}</small></li>`).join('')
+    : '<li class="empty-ledger">No real-world test logged yet. Record an observed attempt, not an estimate.</li>';
+}
+function resetTestForm(){ $('#test-task').value=''; $('#test-result').value=''; $('#test-friction').value=''; }
+function saveTestEntry(){
+  const task = $('#test-task').value.trim();
+  const result = $('#test-result').value;
+  const friction = $('#test-friction').value.trim();
+  const status = $('#test-status');
+  if(!task || !result){ status.textContent='Add the task and observed result'; return; }
+  const entry = { task, result, friction, brief: $('#brief-title').textContent, createdAt: new Date().toISOString() };
+  setTestLog([entry, ...getTestLog()]);
+  status.textContent='Observed test logged locally';
+  resetTestForm();
+  renderTestLog();
+}
 function briefId(brief){ let hash=2166136261; for(let i=0;i<brief.length;i++){ hash^=brief.charCodeAt(i); hash=Math.imul(hash,16777619); } return (hash>>>0).toString(36); }
 function renderEvidence(items, brief){
   const store = getEvidenceStore();
@@ -130,6 +153,7 @@ function render(){ const raw=input.value.trim(); if(!raw){input.focus();return;}
   branchData.forEach((branch,index)=>{branch[2]=scenarioDetails[index];});
   const holder=$('#branches'); holder.innerHTML=''; branchData.forEach((b,i)=>{const node=$('#branch-template').content.cloneNode(true);const button=node.querySelector('button');button.querySelector('.branch-icon').textContent=b[0];button.querySelector('.branch-name').textContent=b[1];button.querySelector('small').textContent=b[2];button.addEventListener('click',()=>{holder.querySelectorAll('.branch').forEach(x=>x.classList.remove('active'));button.classList.add('active');const decision=$('#next-decision').textContent;$('#decision-detail').textContent=`${b[2]} This is a stress test for the current decision: ${decision} Decide whether this path needs prevention, an explicit assumption, or a cheaper fallback before committing more work.`;});if(i===0)button.classList.add('active');holder.append(node);});
   renderLedger();
+  renderTestLog();
   $('#results').scrollIntoView({behavior:'smooth',block:'start'});
 }
 function renderStagedFlow(analysis, raw, selectedIndex){
@@ -181,5 +205,6 @@ $('#analyze').addEventListener('click',render);
 $('#copy').addEventListener('click',async()=>{const branches=[...document.querySelectorAll('#branches .branch')].map(button=>`- ${button.querySelector('.branch-name').textContent}: ${button.querySelector('small').textContent}`).join('\n');const evidence=[...document.querySelectorAll('[data-evidence-row]')].map(row=>{const text=row.querySelector('[data-evidence-text]').textContent;const owner=row.querySelector('[data-evidence-owner]').value.trim() || 'unassigned';const due=row.querySelector('[data-evidence-due]').value || 'no due date';const status=row.querySelector('[data-evidence-done]').checked ? 'verified' : 'open';return `- [${status}] ${text} — owner: ${owner}; due: ${due}`;}).join('\n');const md=`# ${$('#brief-title').textContent}\n\n## Next decision\n${$('#next-decision').textContent}\n\n${$('#decision-detail').textContent}\n\n## Assumptions to validate\n${[...document.querySelectorAll('#assumptions li')].map(x=>'- '+x.textContent).join('\n')}\n\n## Acceptance criteria\n${[...document.querySelectorAll('#criteria li')].map(x=>'- '+x.textContent).join('\n')}\n\n## Evidence to get first\n${evidence}\n\n## Reopen the plan when\n${[...document.querySelectorAll('#triggers li')].map(x=>'- '+x.textContent).join('\n')}\n\n## First release plan\n${[...document.querySelectorAll('#first-release li')].map(x=>'- '+x.textContent).join('\n')}\n\n## Scenario paths checked\n${branches}`; const copied=await copyText(md); $('#copy').textContent=copied ? 'Copied' : 'Copy unavailable'; setTimeout(()=>$('#copy').textContent='Copy as Markdown',1300);});
 count();
 $('#ledger-save').addEventListener('click', saveLedgerEntry);
+$('#test-save').addEventListener('click', saveTestEntry);
 const savedDraft = safeStorage.get(draftKey);
 if(savedDraft){ input.value=savedDraft; count(); $('#draft-status').textContent='Saved draft restored'; $('#clear-draft').hidden=false; }
