@@ -29,6 +29,20 @@
       .flow-options { display:flex; flex-wrap:wrap; gap:8px; }
       .flow-options button { border:1px solid #38436d; background:#11162b; color:#c5cce7; border-radius:7px; padding:8px 10px; font:12px Manrope,sans-serif; cursor:pointer; }
       .flow-options button.active { border-color:#c7ff5e; color:#f4f7ff; box-shadow:inset 0 0 0 1px #c7ff5e33; }
+      .ledger { margin:0 0 16px; background:linear-gradient(135deg,#182442,#151a30); }
+      .ledger-heading { display:flex; justify-content:space-between; gap:14px; align-items:start; }
+      .ledger-heading h3 { font-size:20px; }
+      .ledger-heading #ledger-status { color:#c7ff5e; font:11px 'DM Mono',monospace; white-space:nowrap; }
+      .ledger-controls { display:grid; grid-template-columns:1.25fr 1.15fr .8fr auto; gap:9px; align-items:end; margin-top:16px; }
+      .ledger-controls label { display:grid; gap:6px; color:#9ca5c4; font:11px 'DM Mono',monospace; }
+      .ledger-controls select,.ledger-controls input { width:100%; border:1px solid #3c466f; background:#11162b; color:#edf0ff; border-radius:7px; padding:9px; font:12px Manrope,sans-serif; }
+      .ledger-controls .secondary { height:36px; white-space:nowrap; }
+      .ledger-list { list-style:none; padding:0; margin:16px 0 0; display:grid; gap:7px; }
+      .ledger-list li { border-top:1px solid #2b3358; padding:10px 0 0; color:#c5cce7; font-size:12px; line-height:1.45; }
+      .ledger-list li b { color:#c7ff5e; }
+      .ledger-list .empty-ledger { color:#9ca5c4; }
+      @media (max-width:700px) { .ledger-controls { grid-template-columns:1fr 1fr; } .ledger-controls .secondary { grid-column:1/-1; } .ledger-heading { flex-direction:column; gap:3px; } }
+      @media (max-width:420px) { .ledger-controls { grid-template-columns:1fr; } }
     </style>
   </head>
   <body>
@@ -72,6 +86,17 @@
           <button id="copy" class="secondary" type="button">Copy as Markdown</button>
         </div>
         <div class="signal-row" id="signals"></div>
+        <article class="card ledger" aria-labelledby="ledger-title">
+          <div class="ledger-heading"><div><p class="card-label">DECISION LEDGER</p><h3 id="ledger-title">Turn this brief into a reviewable commitment.</h3></div><span id="ledger-status" aria-live="polite"></span></div>
+          <p>Pick the next move, state your confidence, and set a review date. The entry stays in this browser beside the brief.</p>
+          <div class="ledger-controls">
+            <label>Next move<select id="ledger-choice"><option value="">Choose a decision</option><option>Proceed with the first release</option><option>Run a smaller test first</option><option>Pause until evidence is verified</option><option>Use an existing tool instead</option></select></label>
+            <label>Confidence<select id="ledger-confidence"><option value="">Choose confidence</option><option>Low — evidence is thin</option><option>Medium — test before expanding</option><option>High — criteria and evidence are clear</option></select></label>
+            <label>Review date<input id="ledger-review" type="date"></label>
+            <button id="ledger-save" class="secondary" type="button">Log decision</button>
+          </div>
+          <ol id="ledger-list" class="ledger-list" aria-label="Saved decisions"></ol>
+        </article>
         <article class="card release"><p class="card-label">FIRST RELEASE PLAN</p><div id="flow-picker" class="flow-picker" hidden></div><ol id="first-release"></ol></article>
         <div class="grid">
           <article class="card focus"><p class="card-label">THE NEXT DECISION</p><h3 id="next-decision"></h3><p id="decision-detail"></p><div class="assumptions"><p class="card-label">ASSUMPTIONS TO VALIDATE</p><ul id="assumptions"></ul></div></article>
