@@ -71,9 +71,17 @@
       .review-price { color:#edf0ff!important; font-size:14px!important; margin:15px 0 0!important; }
       .review-price b { color:#c7ff5e; font-size:19px; }
       .review-note { color:#9ca5c4; font:11px/1.45 'DM Mono',monospace; margin:13px 0 0; }
+      .payment-flow { margin-top:16px; border-top:1px solid #34406a; padding-top:15px; }
+      .payment-flow h3 { font-size:14px; margin:0 0 9px; }
+      .payment-steps { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; padding:0; margin:0; list-style:none; counter-reset:payment-step; }
+      .payment-steps li { counter-increment:payment-step; color:#c5cce7; font-size:11px; line-height:1.45; padding:9px; border:1px solid #34406a; border-radius:8px; }
+      .payment-steps li::before { content:counter(payment-step); display:inline-grid; place-items:center; width:18px; height:18px; margin-right:6px; border-radius:50%; background:#c7ff5e; color:#11162a; font:700 11px 'DM Mono',monospace; }
+      .payment-note { color:#9ca5c4!important; font:11px/1.45 'DM Mono',monospace!important; margin:10px 0 0!important; }
       @media (max-width:700px) { .ledger-controls { grid-template-columns:1fr 1fr; } .ledger-controls .secondary { grid-column:1/-1; } .ledger-heading { flex-direction:column; gap:3px; } }
       @media (max-width:700px) { .review-points { grid-template-columns:1fr; } }
+      @media (max-width:700px) { .payment-steps { grid-template-columns:1fr 1fr; } }
       @media (max-width:420px) { .ledger-controls { grid-template-columns:1fr; } }
+      @media (max-width:420px) { .payment-steps { grid-template-columns:1fr; } }
     </style>
   </head>
   <body>
@@ -107,6 +115,16 @@
           <button id="copy-review-request" class="secondary" type="button">Copy review request</button>
           <a class="secondary" href="https://docs.google.com/forms/d/e/1FAIpQLSc43xRTP7m1eZVUOhgZgEXtn5Z8sqODqLdseAZITt6NFWBVIQ/viewform?usp=publish-editor" target="_blank" rel="noreferrer">Request a decision review</a>
           <span id="review-status" aria-live="polite"></span>
+        </div>
+        <div class="payment-flow" aria-labelledby="payment-title">
+          <h3 id="payment-title">How a paid review starts</h3>
+          <ol class="payment-steps">
+            <li>Send the real decision and deadline.</li>
+            <li>Confirm the scope, delivery time, and €15 price.</li>
+            <li>Receive private EUR SEPA payment details.</li>
+            <li>The review starts after the payment arrives.</li>
+          </ol>
+          <p class="payment-note">Bank details are never published. SEPA payments are EUR only and may take 1–5 business days.</p>
         </div>
         <p class="review-note">Scope and price are confirmed before any work begins.</p>
       </section>
@@ -178,6 +196,6 @@
       <footer>Built as a working prototype for OpenAI Build Week · The scenario structure is designed to keep plans honest under changing conditions.</footer>
     </main>
     <template id="branch-template"><button class="branch" type="button"><span class="branch-icon"></span><span class="branch-name"></span><span class="branch-arrow">↗</span><small></small></button></template>
-    <script src="app.js?v=review-form"></script>
+    <script src="app.js?v=payment-flow"></script>
   </body>
 </html>

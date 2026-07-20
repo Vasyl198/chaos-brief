@@ -119,7 +119,7 @@ async function copyTestInvite(){
 }
 async function copyReviewRequest(){
   const request = input.value.trim();
-  const message = `Hi Vasilii — I tried Chaos Brief and would like a paid decision review for a real project.\n\nThe decision I need to make:\n${request || '[paste the real request here]'}\n\nWhat makes it risky or time-sensitive:\n[add context]\n\nWhat I need from the review:\n[first-release boundary, evidence questions, or fallback options]`;
+  const message = `Hi Vasilii — I tried Chaos Brief and would like a paid decision review for a real project.\n\nThe decision I need to make:\n${request || '[paste the real request here]'}\n\nWhat makes it risky or time-sensitive:\n[add context]\n\nWhat I need from the review:\n[first-release boundary, evidence questions, or fallback options]\n\nIf the scope is a fit, please confirm the €15 price and send the private EUR SEPA payment details.`;
   const copied = await copyText(message);
   $('#review-status').textContent = copied ? 'Request copied — paste it into the request form.' : 'Copy unavailable';
 }
