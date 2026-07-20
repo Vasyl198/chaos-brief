@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="An example of a focused decision review: scope boundary, evidence, risks, scenarios, and a seven-day validation plan." />
+    <title>Sample decision review — Chaos Brief</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      .case-shell { max-width: 900px; margin: 0 auto; padding: 36px 20px 72px; }
+      .case-nav { display:flex; justify-content:space-between; gap:16px; align-items:center; margin-bottom:42px; font:12px 'DM Mono',monospace; }
+      .case-nav a { color:#c7ff5e; text-decoration:none; }
+      .case-hero { border:1px solid #536290; border-radius:18px; padding:34px; background:linear-gradient(135deg,#243052,#171d34); }
+      .case-hero h1 { font-size:clamp(34px,6vw,60px); line-height:1; letter-spacing:-3px; margin:8px 0 18px; }
+      .case-hero p { max-width:680px; color:#c5cce7; font-size:17px; line-height:1.6; }
+      .case-note { color:#9ca5c4!important; font:11px/1.5 'DM Mono',monospace!important; margin-top:24px!important; }
+      .case-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; margin-top:18px; }
+      .case-card { border:1px solid #34406a; border-radius:14px; padding:22px; background:#151b30; }
+      .case-card h2 { font-size:21px; margin:6px 0 12px; }
+      .case-card p, .case-card li { color:#c5cce7; line-height:1.55; }
+      .case-card ul, .case-card ol { padding-left:20px; margin:12px 0 0; }
+      .wide { grid-column:1 / -1; }
+      .decision { border-color:#c7ff5e; background:#1d2842; }
+      .decision strong { color:#c7ff5e; }
+      .metric { display:grid; grid-template-columns:34px 1fr; gap:12px; align-items:start; margin:14px 0; }
+      .metric b { display:grid; place-items:center; width:30px; height:30px; border-radius:50%; background:#c7ff5e; color:#101426; font:700 12px 'DM Mono',monospace; }
+      .action { margin-top:28px; padding:26px; border-radius:14px; background:#edf0ff; color:#101426; }
+      .action h2 { margin:0 0 8px; font-size:25px; }
+      .action p { margin:0 0 17px; line-height:1.5; }
+      .action a { display:inline-block; background:#101426; color:#edf0ff; padding:12px 16px; border-radius:8px; text-decoration:none; font-weight:700; }
+      @media (max-width:650px) { .case-grid { grid-template-columns:1fr; } .wide { grid-column:auto; } .case-hero { padding:25px; } .case-hero h1 { letter-spacing:-2px; } }
+    </style>
+  </head>
+  <body>
+    <main class="case-shell">
+      <nav class="case-nav"><a href="./">← Chaos Brief</a><span>SAMPLE / 24-HOUR REVIEW FORMAT</span></nav>
+      <section class="case-hero">
+        <p class="eyebrow">ILLUSTRATIVE CASE</p>
+        <h1>Launch an ML-assisted SaaS without buying uncertainty.</h1>
+        <p>A founder has a product that estimates prices and time. They are tempted to polish every feature, spend heavily on ads, and offer a free pilot — all at once. This review turns that into one small, testable decision.</p>
+        <p class="case-note">This is an anonymised example based on a public founder discussion, not a client project or a claim about that product.</p>
+      </section>
+
+      <section class="case-grid" aria-label="Sample review">
+        <article class="case-card decision wide">
+          <p class="card-label">THE NEXT DECISION</p>
+          <h2>Run a closed pilot before buying traffic.</h2>
+          <p><strong>First-release boundary:</strong> one target user enters one real case, receives an estimate with visible uncertainty, and knows what decision to make next. Everything else — extra modules, broad subscriptions, and acquisition campaigns — stays out of the pilot.</p>
+        </article>
+
+        <article class="case-card">
+          <p class="card-label">WHAT IS KNOWN</p>
+          <ul>
+            <li>The product uses machine learning to help with price and time estimates.</li>
+            <li>The founder sees many useful features and worries the experience may be too complex.</li>
+            <li>A 5–10 person free pilot and paid advertising are being considered.</li>
+          </ul>
+        </article>
+
+        <article class="case-card">
+          <p class="card-label">WHAT MUST NOT BE ASSUMED</p>
+          <ul>
+            <li>That a user understands the estimate without explanation.</li>
+            <li>That free testers will use real, representative data.</li>
+            <li>That model accuracy is sufficient for the decision being made.</li>
+            <li>That advertising will reveal product value rather than only buy visits.</li>
+          </ul>
+        </article>
+
+        <article class="case-card wide">
+          <p class="card-label">THREE SIGNALS BEFORE EXPANSION</p>
+          <div class="metric"><b>1</b><div><strong>Activation</strong><br><span>A pilot user completes the whole flow alone: input → estimate → next action.</span></div></div>
+          <div class="metric"><b>2</b><div><strong>Decision value</strong><br><span>The user can name a real decision the estimate changed, or explain precisely why they did not trust it.</span></div></div>
+          <div class="metric"><b>3</b><div><strong>Payment signal</strong><br><span>The user agrees to a paid continuation, paid pilot, or a specific price conversation. Praise and vague interest do not count.</span></div></div>
+        </article>
+
+        <article class="case-card">
+          <p class="card-label">SCENARIO CHECK</p>
+          <h2>If the pilot fails</h2>
+          <ul>
+            <li><strong>Users cannot finish:</strong> remove choices until one path is clear.</li>
+            <li><strong>Users finish but distrust output:</strong> capture the exact missing input or uncertainty they need.</li>
+            <li><strong>They like it but will not pay:</strong> test the target segment and pricing assumption before adding features.</li>
+          </ul>
+        </article>
+
+        <article class="case-card">
+          <p class="card-label">CHEAPER FALLBACK</p>
+          <h2>Manual review behind the same front door</h2>
+          <p>If the model is not trusted yet, keep a human-confirmed estimate for the pilot. It tests whether the customer values the outcome before expensive accuracy work or ad spend.</p>
+        </article>
+
+        <article class="case-card wide">
+          <p class="card-label">SEVEN-DAY VALIDATION PLAN</p>
+          <ol>
+            <li><strong>Day 1:</strong> Choose one segment and one repeatable estimate type. Write down what is deliberately excluded.</li>
+            <li><strong>Days 2–3:</strong> Invite five people who actually encounter that decision. Ask them to use their own current case, not a fictional test.</li>
+            <li><strong>Days 4–5:</strong> Observe completion and record where confidence breaks: input, output, explanation, or next action.</li>
+            <li><strong>Day 6:</strong> Ask one payment question: “Would you continue using this for this decision at a pilot price? If not, what must change?”</li>
+            <li><strong>Day 7:</strong> Decide: fix one blocker, narrow the segment, run a paid pilot, or stop. Only then consider paid acquisition.</li>
+          </ol>
+        </article>
+      </section>
+
+      <section class="action">
+        <h2>What a real review delivers</h2>
+        <p>One decision boundary, the facts that must be verified, scenario paths, a fallback, and a short test plan — tailored to your actual deadline and project. Scope and price are confirmed before work starts.</p>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSc43xRTP7m1eZVUOhgZgEXtn5Z8sqODqLdseAZITt6NFWBVIQ/viewform?usp=publish-editor" target="_blank" rel="noreferrer">Request a focused decision review</a>
+      </section>
+    </main>
+  </body>
+</html>
