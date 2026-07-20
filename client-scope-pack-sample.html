@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#101426" />
+    <meta name="description" content="An illustrative Client Scope Pack: a rough agency request turned into a clear first phase." />
+    <title>Illustrative Client Scope Pack — Chaos Brief</title>
+    <style>
+      :root { color-scheme:dark; --ink:#eff3ff; --muted:#aeb9dc; --line:#34406a; --bg:#101426; --panel:#171e36; --lime:#c7ff5e; --warn:#ffd580; }
+      * { box-sizing:border-box; } body { margin:0; background:radial-gradient(circle at 88% 0,#263661 0,transparent 29rem),var(--bg); color:var(--ink); font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif; }
+      main { max-width:920px; margin:auto; padding:28px 20px 68px; } nav { display:flex; justify-content:space-between; gap:16px; margin-bottom:58px; font-size:14px; } a { color:inherit; } .brand { text-decoration:none; font-weight:750; } .back { color:var(--muted); }
+      .eyebrow { color:var(--lime); font:700 12px ui-monospace,SFMono-Regular,Consolas,monospace; letter-spacing:.08em; text-transform:uppercase; } h1 { margin:11px 0 8px; font-size:clamp(36px,6vw,62px); line-height:1.04; letter-spacing:-.05em; } h2 { font-size:21px; letter-spacing:-.025em; margin:0 0 12px; } p { margin:0 0 14px; color:var(--muted); }
+      .notice { margin:26px 0 42px; padding:13px 15px; border-left:3px solid var(--warn); background:#2a2638; color:#ded3ba; font-size:14px; } .notice p { color:inherit; margin:0; }
+      .grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:16px 0; } .card { padding:20px; border:1px solid var(--line); border-radius:12px; background:var(--panel); } .card.full { grid-column:1 / -1; } .label { display:block; color:var(--lime); font:700 11px ui-monospace,SFMono-Regular,Consolas,monospace; letter-spacing:.08em; text-transform:uppercase; margin-bottom:8px; }
+      .source { padding:16px; border-radius:8px; background:#10162c; color:#d3dcf7; font-size:14px; } ul { margin:0; padding-left:19px; color:var(--muted); } li { margin:7px 0; } .decision { border-color:#7e9e46; background:linear-gradient(135deg,#202b3d,#171e36); } .decision h2 { color:var(--lime); } .cta { display:inline-block; margin-top:24px; padding:13px 17px; border-radius:9px; background:var(--lime); color:#11172b; text-decoration:none; font-weight:800; }
+      footer { margin-top:45px; color:#8290b7; font-size:13px; } @media(max-width:650px) { nav { margin-bottom:42px; } .grid { grid-template-columns:1fr; } .card.full { grid-column:auto; } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <nav><a class="brand" href="index.html">Chaos Brief</a><a class="back" href="client-scope-pack.html">← Client Scope Pack</a></nav>
+      <div class="eyebrow">Illustrative example</div>
+      <h1>Landing page request → clear first phase</h1>
+      <p>This is an anonymised example of the format. It is not a client project and does not claim that any missing fact is already true.</p>
+      <div class="notice"><p><strong>Input rule:</strong> the pack separates a client’s request from facts that must still be confirmed. It does not make technical, legal, payment, or delivery promises on the client’s behalf.</p></div>
+
+      <section class="grid" aria-label="Sample scope pack">
+        <article class="card full"><span class="label">Rough client request</span><p class="source">“We need a landing page for our new service next week. Visitors should choose a time, pay online, receive a confirmation, and we need to change prices from a phone. It has to work for everyone.”</p></article>
+        <article class="card"><span class="label">Primary first phase</span><h2>One booking path</h2><p>A customer selects one available service slot, completes the chosen payment step, and receives one unambiguous confirmation.</p></article>
+        <article class="card"><span class="label">Acceptance criteria</span><h2>What “done” means</h2><ul><li>A test customer can request one available slot on a phone.</li><li>The business receives the request with the chosen slot.</li><li>The customer sees a clear confirmation and next step.</li></ul></article>
+        <article class="card"><span class="label">Must confirm before quote</span><h2>Three missing facts</h2><ul><li>Who owns availability and how it is updated.</li><li>Whether payment is required at booking, and by which provider.</li><li>What happens when a customer cancels or the business changes a slot.</li></ul></article>
+        <article class="card"><span class="label">Explicitly deferred</span><h2>Not part of phase one</h2><ul><li>Editing every price from a phone.</li><li>Multiple service types and complex availability rules.</li><li>Automated refunds, reminders, and reporting.</li></ul></article>
+        <article class="card decision full"><span class="label">Change trigger</span><h2>When the price or deadline must be revisited</h2><p>If the chosen payment provider, cancellation rule, or availability source cannot support the agreed first flow, stop and choose a cheaper fallback: request-only booking with manual confirmation.</p></article>
+      </section>
+
+      <a class="cta" href="https://docs.google.com/forms/d/e/1FAIpQLSc43xRTP7m1eZVUOhgZgEXtn5Z8sqODqLdseAZITt6NFWBVIQ/viewform?usp=publish-editor" target="_blank" rel="noreferrer">Send a rough request for €15</a>
+      <footer>Delivered manually within 24 hours, with one clarification round. Scope and price are confirmed before payment.</footer>
+    </main>
+  </body>
+</html>
