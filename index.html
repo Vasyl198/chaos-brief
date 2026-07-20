@@ -68,6 +68,8 @@
       .review-actions { display:flex; flex-wrap:wrap; align-items:center; gap:9px; }
       .review-actions a { text-decoration:none; display:inline-flex; align-items:center; }
       #review-status { color:#c7ff5e; font:11px 'DM Mono',monospace; }
+      .review-price { color:#edf0ff!important; font-size:14px!important; margin:15px 0 0!important; }
+      .review-price b { color:#c7ff5e; font-size:19px; }
       .review-note { color:#9ca5c4; font:11px/1.45 'DM Mono',monospace; margin:13px 0 0; }
       @media (max-width:700px) { .ledger-controls { grid-template-columns:1fr 1fr; } .ledger-controls .secondary { grid-column:1/-1; } .ledger-heading { flex-direction:column; gap:3px; } }
       @media (max-width:700px) { .review-points { grid-template-columns:1fr; } }
@@ -100,12 +102,13 @@
           <li>Evidence that must exist before work expands</li>
           <li>Change triggers and a cheaper fallback</li>
         </ul>
+        <p class="review-price"><b>$15</b> intro price for the first 3 reviews — delivered within 24 hours, with one clarification round.</p>
         <div class="review-actions">
           <button id="copy-review-request" class="secondary" type="button">Copy review request</button>
           <a class="secondary" href="https://docs.google.com/forms/d/e/1FAIpQLSc43xRTP7m1eZVUOhgZgEXtn5Z8sqODqLdseAZITt6NFWBVIQ/viewform?usp=publish-editor" target="_blank" rel="noreferrer">Request a decision review</a>
           <span id="review-status" aria-live="polite"></span>
         </div>
-        <p class="review-note">For a paid review, scope and price are agreed before any work begins.</p>
+        <p class="review-note">Scope and price are confirmed before any work begins.</p>
       </section>
 
       <section class="composer" aria-label="Brief composer">
