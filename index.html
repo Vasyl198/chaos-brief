@@ -84,6 +84,18 @@
       @media (max-width:700px) { .payment-steps { grid-template-columns:1fr 1fr; } }
       @media (max-width:420px) { .ledger-controls { grid-template-columns:1fr; } }
       @media (max-width:420px) { .payment-steps { grid-template-columns:1fr; } }
+      .proposed-scenario { margin:0 0 16px; background:linear-gradient(135deg,#25345c,#171d34); border-color:#536290; }
+      .scenario-heading { display:flex; justify-content:space-between; gap:18px; align-items:start; }
+      .scenario-heading h3 { max-width:650px; }
+      .scenario-type { color:#c7ff5e; border:1px solid #6173a8; border-radius:999px; padding:6px 9px; font:10px 'DM Mono',monospace; white-space:nowrap; }
+      .scenario-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:9px; margin:18px 0 14px; }
+      .scenario-grid > div { border:1px solid #39466f; border-radius:8px; padding:12px; background:#12193280; }
+      .scenario-grid .card-label { margin-bottom:6px; }
+      .scenario-grid p:not(.card-label) { font-size:12px; line-height:1.5; }
+      .scenario-steps { display:grid; grid-template-columns:repeat(3,1fr); gap:9px; list-style:none; padding:0; margin:0; counter-reset:scenario-step; }
+      .scenario-steps li { counter-increment:scenario-step; border-top:1px solid #39466f; padding:12px 3px 0 28px; margin:0; }
+      .scenario-steps li:before { content:counter(scenario-step); top:11px; left:1px; display:grid; place-items:center; width:18px; height:18px; border-radius:50%; font:700 10px 'DM Mono',monospace; color:#101426; background:#c7ff5e; }
+      @media (max-width:700px) { .scenario-heading { flex-direction:column; gap:8px; } .scenario-grid,.scenario-steps { grid-template-columns:1fr; } .scenario-type { white-space:normal; } }
     </style>
   </head>
   <body>
@@ -160,6 +172,12 @@
           <button id="copy" class="secondary" type="button">Copy as Markdown</button>
         </div>
         <div class="signal-row" id="signals"></div>
+        <article class="card proposed-scenario" aria-labelledby="scenario-title">
+          <div class="scenario-heading"><div><p class="card-label">YOUR PROPOSED SCENARIO</p><h3 id="scenario-title"></h3><p id="scenario-summary"></p></div><span id="scenario-type" class="scenario-type"></span></div>
+          <div class="scenario-grid"><div><p class="card-label">FIRST MOVE</p><p id="scenario-first-move"></p></div><div><p class="card-label">PROOF IT WORKS</p><p id="scenario-proof"></p></div><div><p class="card-label">DO NOT EXPAND YET</p><p id="scenario-boundary"></p></div></div>
+          <ol id="scenario-steps" class="scenario-steps"></ol>
+        </article>
+        <article class="card release"><p class="card-label">FIRST RELEASE PLAN</p><div id="flow-picker" class="flow-picker" hidden></div><ol id="first-release"></ol></article>
         <article class="card ledger" aria-labelledby="ledger-title">
           <div class="ledger-heading"><div><p class="card-label">DECISION LEDGER</p><h3 id="ledger-title">Turn this brief into a reviewable commitment.</h3></div><span id="ledger-status" aria-live="polite"></span></div>
           <p>Pick the next move, state your confidence, and set a review date. The entry stays in this browser beside the brief.</p>
@@ -184,7 +202,6 @@
           <ol id="test-list" class="ledger-list" aria-label="Saved real-world tests"></ol>
           <div class="privacy-controls"><span>Logs stay in this browser until you clear them.</span><button id="clear-local-logs" class="secondary" type="button">Clear local logs</button></div>
         </article>
-        <article class="card release"><p class="card-label">FIRST RELEASE PLAN</p><div id="flow-picker" class="flow-picker" hidden></div><ol id="first-release"></ol></article>
         <div class="grid">
           <article class="card focus"><p class="card-label">THE NEXT DECISION</p><h3 id="next-decision"></h3><p id="decision-detail"></p><div class="assumptions"><p class="card-label">ASSUMPTIONS TO VALIDATE</p><ul id="assumptions"></ul></div></article>
           <article class="card"><p class="card-label">ACCEPTANCE CRITERIA</p><ul id="criteria"></ul></article>

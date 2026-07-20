@@ -59,6 +59,39 @@ function analyzeRequest(raw){
       : ['Name one primary user and one task they must finish.', 'Build the smallest version that makes the acceptance criteria testable.', 'Review the evidence gaps and decide what must change before expanding scope.']
   };
 }
+function proposedScenario(raw, analysis){
+  const normalized = raw.toLocaleLowerCase();
+  const retail = /\b(?:store|shop|retail|boutique|clothing|apparel|fashion|catalog)\b|магазин\w*|бутик\w*|одежд\w*|товар\w*|каталог\w*/iu.test(normalized);
+  if(retail) return {
+    type: 'STORE LAUNCH',
+    title: 'Test one small clothing collection before building a full store.',
+    summary: 'Start with one clear buyer and a narrow set of products. The scenario is not “open everything”; it is “prove that a buyer can choose one item and send an order request without confusion.”',
+    firstMove: 'Choose one category, 12–20 items, one price rule, and one way to accept orders.',
+    proof: 'A person unfamiliar with the project finds an item, understands size and price, and submits one valid order request.',
+    boundary: 'Do not add delivery automation, loyalty programs, or a large catalogue until this first path works.',
+    steps: ['Create product cards with photo, size, price, and current availability.', 'Add one visible order action: message, form, or checkout link.', 'Ask one person to buy an item without your help; record where they stop.']
+  };
+  const focus = analysis.focus || 'the requested outcome';
+  return {
+    type: 'FIRST TEST',
+    title: 'Prove one complete path before expanding the request.',
+    summary: `The proposed scenario reduces ${focus} to one user, one task, and one observable result.`,
+    firstMove: 'Name the first user and the one task they must complete.',
+    proof: 'That user completes the task without guidance and the outcome is visible to the owner.',
+    boundary: 'Keep additional features manual or deferred until this first path is tested.',
+    steps: ['Write the smallest successful outcome in one sentence.', 'Build only what is necessary for that outcome.', 'Run one real attempt and record the friction before adding scope.']
+  };
+}
+function renderProposedScenario(raw, analysis){
+  const scenario = proposedScenario(raw, analysis);
+  $('#scenario-title').textContent = scenario.title;
+  $('#scenario-summary').textContent = scenario.summary;
+  $('#scenario-type').textContent = scenario.type;
+  $('#scenario-first-move').textContent = scenario.firstMove;
+  $('#scenario-proof').textContent = scenario.proof;
+  $('#scenario-boundary').textContent = scenario.boundary;
+  $('#scenario-steps').innerHTML = list(scenario.steps);
+}
 function list(items){ return items.map(x=>`<li>${x}</li>`).join(''); }
 function getEvidenceStore(){ try { return JSON.parse(safeStorage.get(evidenceKey)) || {}; } catch { return {}; } }
 function setEvidenceStore(store){ safeStorage.set(evidenceKey, JSON.stringify(store)); }
@@ -224,6 +257,7 @@ function renderRequestDiff(baseline){
   };
 }
 function render(){ const raw=input.value.trim(); if(!raw){input.focus();return;} const analysis=analyzeRequest(raw); $('#empty').hidden=true; $('#results').hidden=false; $('#brief-title').textContent=title(raw); $('#next-decision').textContent=analysis.needsStaging ? 'Choose one end-to-end flow for the first release.' : 'Confirm the smallest outcome that must be true next.'; $('#decision-detail').textContent=analysis.needsStaging ? `This request combines ${analysis.focus}. Treating all of it as one release creates an untestable scope: select one flow, name what is deferred, then validate it before adding the next concern.` : `Before selecting a solution, agree what “working” means for ${analysis.focus}: who uses it, what they can complete, and what proof counts.`;
+  renderProposedScenario(raw, analysis);
   $('#signals').innerHTML=[`Scope: <b>${analysis.needsStaging ? 'staged release needed' : 'unconfirmed'}</b>`,`Evidence gaps: <b>${analysis.gaps}</b>`,'Branches: <b>6 checked</b>','Plan state: <b>draft</b>','<span id="ownership-signal"></span>'].map(x=>`<span class="signal">${x}</span>`).join('');
   $('#criteria').innerHTML=list(analysis.criteria);
   renderEvidence(analysis.evidence, raw);
