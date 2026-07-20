@@ -165,6 +165,61 @@ function assumptionsFor(analysis){
     analysis.needsStaging ? 'The deferred concerns can safely remain manual while the first flow is tested.' : 'The scope can stay small until the acceptance criteria are proven.'
   ];
 }
+function renderScenarioComparison(details){
+  const responses = [
+    'Build one first flow, then review it against the criteria.',
+    'Confirm the owner, content, and review slot before building.',
+    'Stop and resolve the missing fact before implementation expands.',
+    'Reopen the plan and explicitly approve the changed condition.',
+    'Test a smaller manual fallback before adding more tooling.',
+    'Choose the existing tool if it satisfies the same criteria for less.'
+  ];
+  $('#scenario-compare').innerHTML = branchData.map((branch, index) => `
+    <article class="comparison-path">
+      <p><span class="comparison-icon">${branch[0]}</span>${escapeHtml(branch[1])}</p>
+      <div><span>ASSUMPTION UNDER PRESSURE</span><strong>${escapeHtml(details[index])}</strong></div>
+      <div><span>SMALLEST RESPONSE</span><strong>${responses[index]}</strong></div>
+    </article>`).join('');
+}
+function scenarioDetailsFor(analysis){
+  return [
+    `A first version for ${analysis.focus} is reviewed against the criteria before it expands.`,
+    'The owner already has the required content, rules, and decision authority, so the first review can happen quickly.',
+    `Required facts for ${analysis.focus} are missing or contradictory; stop implementation and resolve the evidence gap first.`,
+    'A deadline, rule, source of truth, or delivery condition changes after approval; reopen the plan rather than patching silently.',
+    analysis.needsStaging ? 'Use a smaller manual flow for the deferred concerns while validating one end-to-end flow.' : 'Use a manual or low-code flow if it meets the same acceptance criteria for the first review.',
+    `Compare an existing tool against the criteria for ${analysis.focus}; choose it if it meets the need more cheaply.`
+  ];
+}
+function diffItems(before, after){
+  const added = after.filter(item => !before.includes(item));
+  const removed = before.filter(item => !after.includes(item));
+  return { added, removed };
+}
+function renderRequestDiff(baseline){
+  const field = $('#compare-brief');
+  const result = $('#request-diff-result');
+  field.value = baseline.raw;
+  result.hidden = true;
+  $('#compare-request').onclick = () => {
+    const revisedRaw = field.value.trim();
+    if(!revisedRaw){ field.focus(); return; }
+    const revised = analyzeRequest(revisedRaw);
+    const revisedDetails = scenarioDetailsFor(revised);
+    const criteria = diffItems(baseline.analysis.criteria, revised.criteria);
+    const evidence = diffItems(baseline.analysis.evidence, revised.evidence);
+    const changedPaths = baseline.details.map((detail, index) => detail !== revisedDetails[index] ? branchData[index][1] : null).filter(Boolean);
+    const changes = [
+      `<article><span>FOCUS</span><strong>${escapeHtml(baseline.analysis.focus)} → ${escapeHtml(revised.focus)}</strong></article>`,
+      `<article><span>EVIDENCE GAPS</span><strong>${baseline.analysis.gaps} → ${revised.gaps}</strong></article>`,
+      `<article><span>RELEASE SHAPE</span><strong>${baseline.analysis.needsStaging ? 'staged release' : 'single flow'} → ${revised.needsStaging ? 'staged release' : 'single flow'}</strong></article>`,
+      `<article><span>SCENARIOS AFFECTED</span><strong>${escapeHtml(changedPaths.join(', ') || 'No scenario wording changed')}</strong></article>`
+    ];
+    const list = (items, empty) => items.length ? `<ul>${items.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : `<p>${empty}</p>`;
+    result.innerHTML = `<p class="card-label">REQUEST DIFF</p><h4>What the changed request would alter</h4><div class="diff-summary">${changes.join('')}</div><div class="diff-lists"><div><span>NEW EVIDENCE TO CHECK</span>${list(evidence.added, 'No new evidence questions.')}</div><div><span>NEW ACCEPTANCE CRITERIA</span>${list(criteria.added, 'No new criteria.')}</div></div>`;
+    result.hidden = false;
+  };
+}
 function render(){ const raw=input.value.trim(); if(!raw){input.focus();return;} const analysis=analyzeRequest(raw); $('#empty').hidden=true; $('#results').hidden=false; $('#brief-title').textContent=title(raw); $('#next-decision').textContent=analysis.needsStaging ? 'Choose one end-to-end flow for the first release.' : 'Confirm the smallest outcome that must be true next.'; $('#decision-detail').textContent=analysis.needsStaging ? `This request combines ${analysis.focus}. Treating all of it as one release creates an untestable scope: select one flow, name what is deferred, then validate it before adding the next concern.` : `Before selecting a solution, agree what “working” means for ${analysis.focus}: who uses it, what they can complete, and what proof counts.`;
   $('#signals').innerHTML=[`Scope: <b>${analysis.needsStaging ? 'staged release needed' : 'unconfirmed'}</b>`,`Evidence gaps: <b>${analysis.gaps}</b>`,'Branches: <b>6 checked</b>','Plan state: <b>draft</b>','<span id="ownership-signal"></span>'].map(x=>`<span class="signal">${x}</span>`).join('');
   $('#criteria').innerHTML=list(analysis.criteria);
@@ -173,15 +228,10 @@ function render(){ const raw=input.value.trim(); if(!raw){input.focus();return;}
   $('#assumptions').innerHTML=list(assumptionsFor(analysis));
   $('#first-release').innerHTML=list(analysis.firstRelease);
   renderFlowPicker(analysis, raw);
-  const scenarioDetails = [
-    `A first version for ${analysis.focus} is reviewed against the criteria before it expands.`,
-    'The owner already has the required content, rules, and decision authority, so the first review can happen quickly.',
-    `Required facts for ${analysis.focus} are missing or contradictory; stop implementation and resolve the evidence gap first.`,
-    'A deadline, rule, source of truth, or delivery condition changes after approval; reopen the plan rather than patching silently.',
-    analysis.needsStaging ? 'Use a smaller manual flow for the deferred concerns while validating one end-to-end flow.' : 'Use a manual or low-code flow if it meets the same acceptance criteria for the first review.',
-    `Compare an existing tool against the criteria for ${analysis.focus}; choose it if it meets the need more cheaply.`
-  ];
+  const scenarioDetails = scenarioDetailsFor(analysis);
   branchData.forEach((branch,index)=>{branch[2]=scenarioDetails[index];});
+  renderScenarioComparison(scenarioDetails);
+  renderRequestDiff({raw, analysis, details: scenarioDetails});
   const holder=$('#branches'); holder.innerHTML=''; branchData.forEach((b,i)=>{const node=$('#branch-template').content.cloneNode(true);const button=node.querySelector('button');button.querySelector('.branch-icon').textContent=b[0];button.querySelector('.branch-name').textContent=b[1];button.querySelector('small').textContent=b[2];button.addEventListener('click',()=>{holder.querySelectorAll('.branch').forEach(x=>x.classList.remove('active'));button.classList.add('active');const decision=$('#next-decision').textContent;$('#decision-detail').textContent=`${b[2]} This is a stress test for the current decision: ${decision} Decide whether this path needs prevention, an explicit assumption, or a cheaper fallback before committing more work.`;});if(i===0)button.classList.add('active');holder.append(node);});
   renderLedger();
   renderTestLog();
