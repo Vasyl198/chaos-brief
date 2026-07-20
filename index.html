@@ -57,7 +57,20 @@
       .test-controls select,.test-controls input { width:100%; border:1px solid #3c466f; background:#11162b; color:#edf0ff; border-radius:7px; padding:9px; font:12px Manrope,sans-serif; }
       .test-controls .secondary { height:36px; white-space:nowrap; }
       .privacy-controls { display:flex; justify-content:space-between; gap:12px; align-items:center; margin-top:14px; color:#9ca5c4; font:11px 'DM Mono',monospace; }
+      .hero-actions { display:flex; flex-wrap:wrap; align-items:center; gap:14px; margin-top:26px; }
+      .hero-actions .primary { text-decoration:none; }
+      .hero-link { color:#c5cce7; font:12px 'DM Mono',monospace; }
+      .review-offer { margin-top:18px; background:linear-gradient(135deg,#243052,#171d34); border-color:#536290; }
+      .review-offer h2 { font-size:25px; line-height:1.16; letter-spacing:-1px; margin:0 0 10px; }
+      .review-offer p { max-width:670px; }
+      .review-points { display:grid; grid-template-columns:repeat(3,1fr); gap:9px; padding:0; margin:17px 0; list-style:none; }
+      .review-points li { border:1px solid #34406a; border-radius:8px; color:#c5cce7; font-size:12px; line-height:1.45; padding:10px; }
+      .review-actions { display:flex; flex-wrap:wrap; align-items:center; gap:9px; }
+      .review-actions a { text-decoration:none; display:inline-flex; align-items:center; }
+      #review-status { color:#c7ff5e; font:11px 'DM Mono',monospace; }
+      .review-note { color:#9ca5c4; font:11px/1.45 'DM Mono',monospace; margin:13px 0 0; }
       @media (max-width:700px) { .ledger-controls { grid-template-columns:1fr 1fr; } .ledger-controls .secondary { grid-column:1/-1; } .ledger-heading { flex-direction:column; gap:3px; } }
+      @media (max-width:700px) { .review-points { grid-template-columns:1fr; } }
       @media (max-width:420px) { .ledger-controls { grid-template-columns:1fr; } }
     </style>
   </head>
@@ -72,6 +85,27 @@
         <p class="eyebrow">WORK &amp; PRODUCTIVITY</p>
         <h1>Make vague work <em>decision-ready.</em></h1>
         <p class="lede">Chaos Brief exposes the branches a linear plan misses: assumptions, evidence gaps, failure paths, acceptance criteria, and the next decision to make.</p>
+        <div class="hero-actions">
+          <a class="primary" href="#brief"><span>Try a 5-minute brief</span><b>â†’</b></a>
+          <a class="hero-link" href="#review-offer">Need a human decision review?</a>
+        </div>
+      </section>
+
+      <section id="review-offer" class="card review-offer" aria-labelledby="review-title">
+        <p class="card-label">FOR A REAL PROJECT</p>
+        <h2 id="review-title">Need a focused decision review?</h2>
+        <p>Start with the free brief. If one decision still feels risky, discuss the real request with the maker and turn it into a reviewable first-release boundary.</p>
+        <ul class="review-points">
+          <li>One primary flow to validate first</li>
+          <li>Evidence that must exist before work expands</li>
+          <li>Change triggers and a cheaper fallback</li>
+        </ul>
+        <div class="review-actions">
+          <button id="copy-review-request" class="secondary" type="button">Copy review request</button>
+          <a class="secondary" href="https://www.producthunt.com/@vasyl198" target="_blank" rel="noreferrer">Discuss on Product Hunt</a>
+          <span id="review-status" aria-live="polite"></span>
+        </div>
+        <p class="review-note">For a paid review, scope and price are agreed before any work begins.</p>
       </section>
 
       <section class="composer" aria-label="Brief composer">
@@ -141,6 +175,6 @@
       <footer>Built as a working prototype for OpenAI Build Week · The scenario structure is designed to keep plans honest under changing conditions.</footer>
     </main>
     <template id="branch-template"><button class="branch" type="button"><span class="branch-icon"></span><span class="branch-name"></span><span class="branch-arrow">↗</span><small></small></button></template>
-    <script src="app.js?v=db06aff-invite"></script>
+    <script src="app.js?v=review-request"></script>
   </body>
 </html>
