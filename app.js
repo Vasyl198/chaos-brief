@@ -29,7 +29,10 @@ function saveDraft(){
   if(value){ const saved=safeStorage.set(draftKey, input.value); $('#draft-status').textContent=saved ? 'Saved locally' : 'Storage unavailable — this draft stays only on this page'; $('#clear-draft').hidden=false; }
   else { safeStorage.remove(draftKey); $('#draft-status').textContent=''; $('#clear-draft').hidden=true; }
 }
-function title(text){ const words=text.replace(/[^\w\s-]/g,'').trim().split(/\s+/).slice(0,7); return words.length ? words.map(w=>w[0].toUpperCase()+w.slice(1)).join(' ') : 'Decision brief'; }
+function title(text){
+  const words = text.replace(/[^\p{L}\p{N}\s-]/gu, ' ').trim().split(/\s+/).filter(Boolean).slice(0, 7);
+  return words.length ? words.map(word => word.charAt(0).toLocaleUpperCase() + word.slice(1)).join(' ') : 'Decision brief';
+}
 function getNouns(text){ const found=text.toLowerCase().match(/\b(?:booking|orders?|availability|menu|website|page|launch|client|product|payment|delivery|team|app|campaign|service)\b/g) || []; return [...new Set(found)].slice(0,3).join(', ') || 'the requested outcome'; }
 const topicRules = [
   { match: /\b(?:pay(?:ment|ments)?|checkout|invoice|card|stripe|refund)\b|оплат\w*|плат[еі]ж\w*/i, label: 'payment', criterion: 'A customer can complete a payment and receives an unambiguous confirmation.', evidence: 'Which payment method, currency, and refund rule are required for the first release.', trigger: 'The chosen payment provider cannot support the required country, currency, or refund flow.' },
