@@ -10,6 +10,16 @@
   let connected = false;
   let analyzing = false;
 
+  async function fetchWithTimeout(url, options = {}, timeoutMs = 12000) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      return await fetch(url, { ...options, signal: controller.signal });
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
   const setList = (selector, values) => {
     const target = document.querySelector(selector);
     target.replaceChildren(...values.map((value) => {
@@ -45,14 +55,14 @@
     connectButton.disabled = true;
     status.textContent = 'Connecting to the operator on this computer...';
     try {
-      const response = await fetch(`${endpoint}/api/session`, { mode: 'cors', cache: 'no-store' });
+      const response = await fetchWithTimeout(`${endpoint}/api/session`, { mode: 'cors', cache: 'no-store' });
       const data = await response.json();
       if (!response.ok || !data.token) throw new Error(data.error || 'The public bridge is locked.');
       token = data.token;
       const expiry = data.publicBridge?.expiresAt ? new Date(data.publicBridge.expiresAt).toLocaleTimeString() : 'soon';
       setConnected(true, `Personal Codex connected. Public-page access expires at ${expiry}.`);
     } catch {
-      setConnected(false, 'Start the local operator, enable public-page access there, then allow local network access in Chrome and retry.');
+      setConnected(false, 'Start the local operator, enable public-page access there, then choose Allow if Chrome asks whether this site may access your local network.');
     } finally {
       connectButton.disabled = false;
     }
@@ -99,13 +109,13 @@
     analyzeButton.disabled = true;
     status.textContent = 'Your local Codex is analyzing this request...';
     try {
-      const response = await fetch(`${endpoint}/api/analyze`, {
+      const response = await fetchWithTimeout(`${endpoint}/api/analyze`, {
         method: 'POST',
         mode: 'cors',
         cache: 'no-store',
         headers: { 'content-type': 'application/json', 'x-operator-token': token },
         body: JSON.stringify({ request })
-      });
+      }, 180000);
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Codex could not analyze the request.');
       renderBrief(data);
