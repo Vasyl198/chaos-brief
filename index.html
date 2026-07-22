@@ -148,8 +148,8 @@
 
       <section class="composer" aria-label="Brief composer">
         <div class="composer-top">
-          <label for="brief">What needs to happen?</label>
-          <button id="sample" class="text-button" type="button">Use a realistic example</button>
+          <label for="brief" data-ui="requestLabel">What needs to happen?</label>
+          <button id="sample" class="text-button" type="button" data-ui="sample">Use a realistic example</button>
         </div>
         <textarea id="brief" maxlength="800" placeholder="Example: Launch a booking page for a small bakery next week. It must accept orders, show availability, and be easy for the owner to update."></textarea>
         <div class="composer-bottom">
@@ -166,15 +166,24 @@
 
       <section id="personal-codex" class="card personal-codex" aria-labelledby="personal-codex-title">
         <div>
-          <p class="card-label">PERSONAL MODE · THIS COMPUTER ONLY</p>
-          <h2 id="personal-codex-title">Use my local Codex instead of fixed templates</h2>
-          <p>Connects this page to the private operator running on your computer. Other visitors cannot use your Codex, and requests cannot run tools or change files.</p>
+          <p class="card-label" data-copy="privateLabel">PERSONAL MODE · THIS COMPUTER ONLY</p>
+          <h2 id="personal-codex-title" data-copy="personalTitle">Make a real decision with Personal Codex</h2>
+          <p data-copy="personalDescription">Personal Codex creates request-specific reasoning. The fixed demo remains available as a transparent fallback.</p>
+        </div>
+        <label class="language-picker"><span data-copy="language">Language</span><select id="language-select"><option value="ru">Русский</option><option value="en">English</option><option value="uk">Українська</option></select></label>
+        <div class="engine-picker" role="group" aria-label="Reasoning engine">
+          <button id="engine-personal" class="engine-choice active" type="button" data-copy="personalEngine">Personal Codex</button>
+          <button id="engine-fixed" class="engine-choice" type="button" data-copy="fixedEngine">Fixed demo</button>
+        </div>
+        <div class="case-controls">
+          <label><span data-copy="savedCases">Saved cases</span><select id="case-select"><option value="">New unsaved case</option></select></label>
+          <button id="new-case" class="secondary" type="button" data-copy="newCase">New case</button>
         </div>
         <div class="personal-codex-actions">
-          <button id="codex-connect" class="secondary" type="button">Connect my Codex</button>
-          <a class="secondary" href="http://127.0.0.1:4183/" target="_blank" rel="noreferrer">Open local operator</a>
+          <button id="codex-connect" class="secondary" type="button" data-copy="connect">Connect Personal Codex</button>
+          <a class="secondary" href="http://127.0.0.1:4183/" target="_blank" rel="noreferrer" data-copy="openOperator">Open local operator</a>
         </div>
-        <p id="codex-connection-status" class="codex-connection-status" role="status">Fixed-lens mode is active.</p>
+        <p id="codex-connection-status" class="codex-connection-status" role="status">Personal Codex is selected. Connect the local operator to begin.</p>
       </section>
 
       <section id="empty" class="empty-state">
@@ -184,18 +193,29 @@
 
       <section id="codex-results" class="codex-results" hidden aria-live="polite">
         <div class="result-heading">
-          <div><p class="eyebrow">PERSONAL CODEX BRIEF</p><h2 id="codex-title"></h2></div>
-          <span id="codex-confidence" class="codex-confidence"></span>
+          <div><p class="eyebrow" data-ui="briefLabel">PERSONAL CODEX BRIEF</p><h2 id="codex-title"></h2></div>
+          <div class="result-actions"><span id="codex-confidence" class="codex-confidence"></span><button id="copy-codex-brief" class="secondary" type="button" data-ui="copyMarkdown">Copy Markdown</button></div>
         </div>
         <p id="codex-summary" class="codex-summary"></p>
-        <article class="card codex-decision"><p class="card-label">NEXT DECISION</p><h3 id="codex-next-decision"></h3><p id="codex-recommendation"></p></article>
-        <div class="grid codex-facts">
-          <article class="card"><p class="card-label">ASSUMPTIONS</p><ul id="codex-assumptions"></ul></article>
-          <article class="card"><p class="card-label">QUESTIONS THAT COULD CHANGE THE ANSWER</p><ul id="codex-questions"></ul></article>
+        <article class="card codex-decision"><p class="card-label" data-ui="nextDecision">NEXT DECISION</p><h3 id="codex-next-decision"></h3><p id="codex-recommendation"></p></article>
+        <div id="codex-change-summary" class="card codex-change-summary" hidden><p class="card-label" data-ui="whatChanged">WHAT CHANGED</p><p id="codex-change-reason"></p><div class="grid"><div><h3 data-ui="changed">Changed</h3><ul id="codex-changed"></ul></div><div><h3 data-ui="stable">Stayed stable</h3><ul id="codex-unchanged"></ul></div></div></div>
+        <div class="evidence-matrix">
+          <article class="card"><p class="card-label" data-ui="confirmed">CONFIRMED FACTS</p><ul id="codex-confirmed"></ul></article>
+          <article class="card"><p class="card-label" data-ui="statements">USER STATEMENTS</p><ul id="codex-user-statements"></ul></article>
+          <article class="card"><p class="card-label" data-ui="inferences">INFERENCES</p><ul id="codex-inferences"></ul></article>
+          <article class="card"><p class="card-label" data-ui="verifyNext">VERIFY NEXT</p><ul id="codex-verification"></ul></article>
         </div>
-        <div class="section-title"><p class="eyebrow">SIX REQUEST-SPECIFIC LENSES</p><span>Generated by your local Codex</span></div>
+        <article class="card smallest-test"><p class="card-label" data-ui="smallestTest">SMALLEST REVERSIBLE TEST</p><h3 id="codex-test-action"></h3><p><b data-ui="success">Success:</b> <span id="codex-test-success"></span></p><p><b data-ui="review">Review:</b> <span id="codex-test-review"></span></p></article>
+        <div class="grid codex-facts">
+          <article class="card"><p class="card-label" data-ui="assumptions">ASSUMPTIONS</p><ul id="codex-assumptions"></ul></article>
+          <article class="card"><p class="card-label" data-ui="reviewTriggers">REVIEW TRIGGERS</p><ul id="codex-review-triggers"></ul></article>
+        </div>
+        <article class="card refinement"><p class="card-label" data-ui="questions">QUESTIONS THAT COULD CHANGE THE ANSWER</p><div id="codex-question-inputs"></div><button id="refine-codex" class="primary" type="button"><span data-ui="refine">Refine with my answers</span><b>→</b></button></article>
+        <article class="card revision"><p class="card-label" data-ui="conditionChanged">A CONDITION CHANGED</p><div class="revision-controls"><select id="change-type"><option value="new_evidence">New evidence</option><option value="budget">Budget changed</option><option value="deadline">Deadline changed</option><option value="scenario">Different scenario</option><option value="unexpected">Unexpected event</option></select><textarea id="change-text" maxlength="2000" placeholder="Describe what changed and what is now true..."></textarea><button id="revise-codex" class="secondary" type="button" data-ui="recalculate">Recalculate decision</button></div></article>
+        <article class="card codex-ledger"><p class="card-label">DECISION COMMITMENT</p><div class="ledger-controls"><label>Chosen action<input id="codex-choice" maxlength="240"></label><label>Confidence<select id="codex-user-confidence"><option value="">Choose</option><option>Low</option><option>Medium</option><option>High</option></select></label><label>Review date<input id="codex-review-date" type="date"></label><button id="save-codex-decision" class="secondary" type="button">Save in this browser</button></div><p id="codex-save-status" class="codex-connection-status" role="status"></p></article>
+        <div class="section-title"><p class="eyebrow" data-ui="sixLenses">SIX REQUEST-SPECIFIC LENSES</p><span data-ui="generated">Generated by your local Codex</span></div>
         <div id="codex-scenarios" class="codex-scenarios"></div>
-        <article class="card codex-limitations"><p class="card-label">LIMITS OF THIS ANSWER</p><ul id="codex-limitations"></ul></article>
+        <article class="card codex-limitations"><p class="card-label" data-ui="limits">LIMITS OF THIS ANSWER</p><ul id="codex-limitations"></ul></article>
       </section>
 
       <section id="results" hidden aria-live="polite">
@@ -260,6 +280,6 @@
     </main>
     <template id="branch-template"><button class="branch" type="button"><span class="branch-icon"></span><span class="branch-name"></span><span class="branch-arrow">↗</span><small></small></button></template>
     <script src="app.js?v=scenario-first"></script>
-    <script src="public-codex.js?v=personal-bridge-2"></script>
+    <script src="public-codex.js?v=decision-workspace-1"></script>
   </body>
 </html>

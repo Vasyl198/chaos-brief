@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { createLocalOperatorServer } from '../server.mjs';
+import { buildAnalysisText, createLocalOperatorServer } from '../server.mjs';
 
-const fakeBrief = { title:'Warehouse decision',summary:'Specific summary',next_decision:'Measure demand',recommendation:'Run a reversible test',confidence:'medium',assumptions:['Demand exists'],questions:['Required area?'],scenarios:Array.from({length:6},(_,index)=>({lens:`Lens ${index+1}`,outcome:'Outcome',risk:'Risk',next_step:'Step'})),limitations:['No verified demand data'] };
+const fakeBrief = { title:'Warehouse decision',summary:'Specific summary',next_decision:'Measure demand',recommendation:'Run a reversible test',confidence:'medium',assumptions:['Demand exists'],questions:['Required area?','Maximum budget?'],scenarios:Array.from({length:6},(_,index)=>({lens:`Lens ${index+1}`,outcome:'Outcome',risk:'Risk',next_step:'Step'})),evidence:{confirmed_facts:[],user_statements:['A warehouse is being considered'],inferences:['Demand may exist'],verification_needed:['Measure demand']},change_summary:{mode:'initial',changed:[],unchanged:[],reason:'Initial brief'},review_triggers:['Demand is lower than expected'],smallest_test:{action:'Interview five users',success_signal:'Three confirm demand',review_date_suggestion:'In seven days'},limitations:['No verified demand data'] };
 
 test('requires a local session token and returns structured analysis', async()=>{
   const server=createLocalOperatorServer({analyze:async(text)=>({brief:{...fakeBrief,summary:text},threadId:'thread_test',turnId:'turn_test'})});
@@ -11,8 +11,22 @@ test('requires a local session token and returns structured analysis', async()=>
     const session=await (await fetch(`${base}/api/session`)).json();
     const denied=await fetch(`${base}/api/analyze`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({request:'rent a warehouse'})}); assert.equal(denied.status,403);
     const accepted=await fetch(`${base}/api/analyze`,{method:'POST',headers:{'content-type':'application/json','x-operator-token':session.token},body:JSON.stringify({request:'rent a warehouse'})}); const body=await accepted.json();
-    assert.equal(accepted.status,200); assert.equal(body.brief.summary,'rent a warehouse'); assert.equal(body.brief.scenarios.length,6);
+    assert.equal(accepted.status,200); assert.match(body.brief.summary,/WORKFLOW MODE: INITIAL/); assert.match(body.brief.summary,/rent a warehouse/); assert.equal(body.brief.scenarios.length,6);
   }finally{await new Promise(resolve=>server.close(resolve));}
+});
+
+test('builds bounded clarification and revision packets with the previous brief', () => {
+  const clarified = buildAnalysisText({ request: 'Rent a warehouse', workflow: 'clarify', previousBrief: fakeBrief, answers: ['200 square metres', 'EUR 2,000 monthly'] });
+  assert.match(clarified, /WORKFLOW MODE: CLARIFY/);
+  assert.match(clarified, /PREVIOUS STRUCTURED BRIEF/);
+  assert.match(clarified, /200 square metres/);
+
+  const revised = buildAnalysisText({ request: 'Rent a warehouse', workflow: 'revise', previousBrief: fakeBrief, changeType: 'budget', changeText: 'Budget fell to EUR 1,200 monthly.' });
+  assert.match(revised, /WORKFLOW MODE: REVISE/);
+  assert.match(revised, /CHANGED CONDITION TYPE: budget/);
+  assert.match(revised, /Budget fell/);
+  assert.throws(() => buildAnalysisText({ request: 'x', workflow: 'revise', previousBrief: fakeBrief, changeType: 'unknown', changeText: 'changed' }), /not supported/);
+  assert.throws(() => buildAnalysisText({ request: 'x', workflow: 'clarify', previousBrief: fakeBrief, answers: [] }), /At least one/);
 });
 
 test('rejects cross-origin requests even with a valid token',async()=>{
