@@ -36,6 +36,7 @@
       .example-row { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 0; }
       .example-row button { border:1px solid #38436d; background:#151b34; color:#c5cce7; border-radius:999px; padding:7px 10px; font:11px 'DM Mono',monospace; cursor:pointer; }
       .example-row button:hover, .example-row button:focus-visible { border-color:#c7ff5e; color:#f4f7ff; outline:none; }
+      .engine-note { margin:12px 0 0; color:#9ca5c4; font:11px/1.5 'DM Mono',monospace; }
       .flow-picker { margin:0 0 14px; }
       .flow-picker p { margin:0 0 8px; color:#9ca5c4; font:11px 'DM Mono',monospace; letter-spacing:.04em; text-transform:uppercase; }
       .flow-options { display:flex; flex-wrap:wrap; gap:8px; }
@@ -102,7 +103,7 @@
     <main class="shell">
       <header>
         <a class="brand" href="#top" aria-label="Chaos Brief home"><span class="brand-mark">↯</span> Chaos Brief</a>
-        <div class="status"><i></i> Scenario engine ready</div>
+        <div class="status"><i></i> Fixed decision lenses ready</div>
       </header>
 
       <section class="hero" id="top">
@@ -152,13 +153,14 @@
         <textarea id="brief" maxlength="800" placeholder="Example: Launch a booking page for a small bakery next week. It must accept orders, show availability, and be easy for the owner to update."></textarea>
         <div class="composer-bottom">
           <div class="draft-meta"><span id="counter">0 / 800</span><span id="draft-status" aria-live="polite"></span><button id="clear-draft" class="text-button" type="button" hidden>Clear saved draft</button></div>
-          <button id="analyze" class="primary" type="button"><span>Generate decision brief</span><b>→</b></button>
+          <button id="analyze" class="primary" type="button"><span>Apply decision lenses</span><b>→</b></button>
         </div>
         <div class="example-row" aria-label="Example requests">
           <button type="button" data-example="bakery">Bakery launch</button>
           <button type="button" data-example="support">Support handoff</button>
           <button type="button" data-example="product">Product release</button>
         </div>
+        <p class="engine-note">This prototype applies six fixed decision lenses. It does not generate unique scenarios with AI; it makes assumptions and checks visible.</p>
       </section>
 
       <section id="empty" class="empty-state">
@@ -173,7 +175,7 @@
         </div>
         <div class="signal-row" id="signals"></div>
         <article class="card proposed-scenario" aria-labelledby="scenario-title">
-          <div class="scenario-heading"><div><p class="card-label">YOUR PROPOSED SCENARIO</p><h3 id="scenario-title"></h3><p id="scenario-summary"></p></div><span id="scenario-type" class="scenario-type"></span></div>
+          <div class="scenario-heading"><div><p class="card-label">SUGGESTED FIRST SCENARIO</p><h3 id="scenario-title"></h3><p id="scenario-summary"></p></div><span id="scenario-type" class="scenario-type"></span></div>
           <div class="scenario-grid"><div><p class="card-label">FIRST MOVE</p><p id="scenario-first-move"></p></div><div><p class="card-label">PROOF IT WORKS</p><p id="scenario-proof"></p></div><div><p class="card-label">DO NOT EXPAND YET</p><p id="scenario-boundary"></p></div></div>
           <ol id="scenario-steps" class="scenario-steps"></ol>
         </article>
@@ -206,7 +208,7 @@
           <article class="card focus"><p class="card-label">THE NEXT DECISION</p><h3 id="next-decision"></h3><p id="decision-detail"></p><div class="assumptions"><p class="card-label">ASSUMPTIONS TO VALIDATE</p><ul id="assumptions"></ul></div></article>
           <article class="card"><p class="card-label">ACCEPTANCE CRITERIA</p><ul id="criteria"></ul></article>
         </div>
-        <section class="branch-section"><div class="section-title"><p class="eyebrow">SIX PATHS TO CHECK</p><span>Click a path to inspect it</span></div><div id="branches" class="branches"></div></section>
+        <section class="branch-section"><div class="section-title"><p class="eyebrow">SIX FIXED LENSES TO CHECK</p><span>Click a lens to inspect it</span></div><div id="branches" class="branches"></div></section>
         <section class="card scenario-compare" aria-labelledby="compare-title">
           <div class="section-title"><div><p class="card-label">SCENARIO COMPARISON</p><h3 id="compare-title">See where the paths diverge.</h3></div><span>Side-by-side · scroll on mobile</span></div>
           <p class="comparison-intro">Each column shows the assumption under pressure and the smallest response that keeps the decision honest.</p>
