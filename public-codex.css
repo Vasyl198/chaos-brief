@@ -1,4 +1,4 @@
-.personal-codex { display:grid; grid-template-columns:1fr auto; align-items:center; gap:12px 24px; margin:0 0 16px; border-color:#566a9f; background:linear-gradient(135deg,#202d50,#151a30); }
+.personal-codex { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:12px 24px; margin:0 0 16px; border-color:#566a9f; background:linear-gradient(135deg,#202d50,#151a30); }
 .personal-codex h2 { margin:5px 0 9px; font-size:24px; letter-spacing:-.5px; }
 .personal-codex p { max-width:700px; }
 .personal-codex-actions { display:flex; flex-wrap:wrap; gap:8px; }
@@ -6,7 +6,15 @@
 .codex-connection-status { grid-column:1/-1; margin:0!important; color:#9ca5c4!important; font:11px/1.45 'DM Mono',monospace!important; }
 .personal-codex.connected { border-color:#c7ff5e; box-shadow:inset 0 0 0 1px #c7ff5e33; }
 .personal-codex.connected .codex-connection-status { color:#c7ff5e!important; }
+.language-picker,.case-controls label { display:grid; gap:6px; color:#9ca5c4; font:10px 'DM Mono',monospace; }
+.language-picker select,.case-controls select,.revision-controls select { min-height:42px; border:1px solid #46557f; border-radius:7px; padding:0 10px; color:#eef1ff; background:#11172b; }
+.engine-picker { grid-column:1/-1; display:flex; gap:8px; padding:5px; border:1px solid #354268; border-radius:10px; background:#11172b; }
+.engine-choice { flex:1; min-height:42px; border:0; border-radius:7px; color:#aeb6d4; background:transparent; cursor:pointer; font:700 11px 'DM Mono',monospace; }
+.engine-choice.active { color:#101426; background:#c7ff5e; }
+.case-controls { grid-column:1/-1; display:grid; grid-template-columns:1fr auto; gap:8px; align-items:end; }
+.case-controls .secondary { min-height:42px; }
 .codex-results { padding-top:24px; }
+.result-actions { display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
 .codex-confidence { color:#c7ff5e; font:11px 'DM Mono',monospace; }
 .codex-summary { max-width:850px; color:#d7dcf1; font-size:18px; line-height:1.65; }
 .codex-decision { margin:16px 0; }
@@ -19,4 +27,23 @@
 .codex-scenarios p { color:#c5cce7; line-height:1.5; }
 .codex-scenarios span { display:block; margin:12px 0 4px; color:#c7ff5e; font:10px 'DM Mono',monospace; }
 .codex-limitations { margin-top:12px; }
-@media(max-width:700px){.personal-codex{grid-template-columns:1fr}.personal-codex-actions{display:grid}.codex-scenarios{grid-template-columns:1fr}}
+.evidence-matrix { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin:12px 0; }
+.evidence-matrix li,.codex-change-summary li { margin:7px 0; color:#c5cce7; line-height:1.45; }
+.evidence-matrix article:nth-child(1) { border-color:#638d70; }
+.evidence-matrix article:nth-child(2) { border-color:#596990; }
+.evidence-matrix article:nth-child(3) { border-color:#806e49; }
+.evidence-matrix article:nth-child(4) { border-color:#8a5865; }
+.smallest-test { margin:12px 0; border-color:#c7ff5e66; }
+.smallest-test h3 { margin:8px 0 12px; }
+.codex-change-summary { margin:12px 0; border-color:#c7ff5e; background:#c7ff5e0a; }
+.codex-change-summary h3 { margin:8px 0; font-size:15px; }
+.refinement,.revision,.codex-ledger { margin-top:12px; }
+#codex-question-inputs { display:grid; gap:10px; margin:12px 0; }
+#codex-question-inputs label { display:grid; gap:6px; color:#d7dcf1; line-height:1.45; }
+#codex-question-inputs textarea,.revision-controls textarea,.codex-ledger input,.codex-ledger select { box-sizing:border-box; width:100%; border:1px solid #46557f; border-radius:7px; padding:10px; color:#eef1ff; background:#11172b; font:inherit; }
+#codex-question-inputs textarea { min-height:74px; resize:vertical; }
+.revision-controls { display:grid; grid-template-columns:190px 1fr auto; gap:8px; align-items:stretch; margin-top:12px; }
+.revision-controls textarea { min-height:72px; resize:vertical; }
+.codex-ledger .ledger-controls { margin-top:12px; }
+.engine-note.personal-active { border-left:2px solid #c7ff5e; padding-left:10px; }
+@media(max-width:700px){.personal-codex{grid-template-columns:1fr}.personal-codex-actions{display:grid}.codex-scenarios,.evidence-matrix{grid-template-columns:1fr}.revision-controls,.case-controls{grid-template-columns:1fr}.result-actions{justify-content:flex-start}}

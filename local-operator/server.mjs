@@ -42,7 +42,7 @@ function publicCorsHeaders(origin, bridgeEnabled, request) {
   return headers;
 }
 
-function readJson(request, limit = 12_000) {
+function readJson(request, limit = 30_000) {
   return new Promise((resolvePromise, reject) => {
     let body = ''; let size = 0;
     request.setEncoding('utf8');
@@ -50,6 +50,43 @@ function readJson(request, limit = 12_000) {
     request.on('end', () => { try { resolvePromise(JSON.parse(body || '{}')); } catch { reject(new Error('Request must be valid JSON.')); } });
     request.on('error', reject);
   });
+}
+
+const workflowModes = new Set(['initial', 'clarify', 'revise']);
+const changeTypes = new Set(['new_evidence', 'budget', 'deadline', 'scenario', 'unexpected']);
+
+export function buildAnalysisText(body) {
+  const requestText = typeof body?.request === 'string' ? body.request.trim() : '';
+  if (!requestText || requestText.length > 4000) throw new Error('Request must contain between 1 and 4000 characters.');
+  const workflow = typeof body.workflow === 'string' ? body.workflow : 'initial';
+  if (!workflowModes.has(workflow)) throw new Error('Workflow must be initial, clarify, or revise.');
+
+  const answers = Array.isArray(body.answers)
+    ? body.answers.slice(0, 3).map((answer) => String(answer || '').trim()).filter(Boolean)
+    : [];
+  if (answers.some((answer) => answer.length > 1000)) throw new Error('Each clarification answer must be at most 1000 characters.');
+  const changeText = typeof body.changeText === 'string' ? body.changeText.trim() : '';
+  if (changeText.length > 2000) throw new Error('Changed condition must be at most 2000 characters.');
+  const changeType = typeof body.changeType === 'string' ? body.changeType : 'unexpected';
+  if (workflow === 'revise' && !changeTypes.has(changeType)) throw new Error('Change type is not supported.');
+
+  let previousBrief = '';
+  if (workflow !== 'initial') {
+    if (!body.previousBrief || typeof body.previousBrief !== 'object' || Array.isArray(body.previousBrief)) throw new Error('A previous brief is required for clarification or revision.');
+    previousBrief = JSON.stringify(body.previousBrief);
+    if (previousBrief.length > 16_000) throw new Error('Previous brief is too large.');
+  }
+  if (workflow === 'clarify' && !answers.length) throw new Error('At least one clarification answer is required.');
+  if (workflow === 'revise' && !changeText) throw new Error('Describe the changed condition.');
+
+  const sections = [
+    `WORKFLOW MODE: ${workflow.toUpperCase()}`,
+    `ORIGINAL REQUEST:\n${requestText}`
+  ];
+  if (previousBrief) sections.push(`PREVIOUS STRUCTURED BRIEF:\n${previousBrief}`);
+  if (answers.length) sections.push(`USER CLARIFICATION ANSWERS:\n${answers.map((answer, index) => `${index + 1}. ${answer}`).join('\n')}`);
+  if (workflow === 'revise') sections.push(`CHANGED CONDITION TYPE: ${changeType}\nCHANGED CONDITION:\n${changeText}`);
+  return sections.join('\n\n');
 }
 
 export function createLocalOperatorServer({ analyze, publicRoot = defaultPublicRoot } = {}) {
@@ -97,8 +134,8 @@ export function createLocalOperatorServer({ analyze, publicRoot = defaultPublicR
       if (request.headers['x-operator-token'] !== sessionToken) return sendJson(response, 403, { error: 'Invalid local operator session.' }, headers);
       let body;
       try { body = await readJson(request); } catch (error) { return sendJson(response, 400, { error: error.message }, headers); }
-      const text = typeof body.request === 'string' ? body.request.trim() : '';
-      if (!text || text.length > 4000) return sendJson(response, 400, { error: 'Request must contain between 1 and 4000 characters.' }, headers);
+      let text;
+      try { text = buildAnalysisText(body); } catch (error) { return sendJson(response, 400, { error: error.message }, headers); }
       try {
         const work = queue.then(() => analyzer(text), () => analyzer(text));
         queue = work.catch(() => {});
