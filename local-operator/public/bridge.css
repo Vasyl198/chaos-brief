@@ -1,0 +1,16 @@
+.bridge {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px 24px;
+  align-items: center;
+  margin: 0 0 18px;
+  padding: 20px;
+  background: linear-gradient(145deg, #1b2442, #101529);
+  border: 1px solid #4a5a8c;
+  border-radius: 16px;
+}
+.bridge h2 { margin: 5px 0 8px; font-size: 21px; }
+.bridge p { margin: 0; color: var(--muted); line-height: 1.5; }
+.bridge code { color: var(--acid); }
+#bridge-status { grid-column: 1 / -1; font: 12px Consolas, monospace; color: var(--acid); }
+@media (max-width: 720px) { .bridge { grid-template-columns: 1fr; } }
